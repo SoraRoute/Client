@@ -15,7 +15,7 @@ class SellerService{
                 connection,sellerData.email
             );
 
-            if(existingSeller.length > 0){
+            if(existingSeller){
                 throw new Error("Email Already Registered.")
             }
 
@@ -47,16 +47,58 @@ class SellerService{
         }
     }
 
+    async verifySellerOtp(email,otp){
+        const connection = await db.getConnection();
+         
+        try{
+            await connection.beginTransaction();
+
+            const otpRecord = await sellerRepository.findOtpByEmail(connection,email,"REGISTER");
+
+            if(!otpRecord){
+                throw new Error("OTP not found or has expired.");
+            }
+
+            if(otpRecord.expires_at < new Date()){
+                throw new Error("OTP has expired.");
+            }
+
+            const isMatch = await bcrypt.compare(otp,otpRecord.otp_hash);
+
+            if(!isMatch){
+                throw new Error("Invalid OTP.");
+            }
+
+            await sellerRepository.deleteOtp(connection,email,"REGISTER");
+
+            const verificationToken = jwtProvider.generateVerificationToken(email);
+
+            await connection.commit();
+
+            return{
+                message:"Email Verified Successfully.",
+                verificationToken
+            }
+
+        }catch(error){
+            await connection.rollback();
+            throw error;
+
+        }finally{
+            connection.release();
+        }
+    }
+
     async loginSeller(loginData){
         const connection = await db.getConnection();
         try{
             const existingSeller = await sellerRepository.findSellerByEmail(connection,loginData.email);
 
-            if(existingSeller.length === 0){
+            if(!existingSeller){
                 throw new Error("Invalid Email or Password");
             }
 
-            const seller = existingSeller[0];
+            const seller = existingSeller;
 
             const isMatch = await bcrypt.compare(
                 loginData.passwordd,
@@ -82,8 +124,7 @@ class SellerService{
         }
         finally{
             connection.release();
-        }
-            
+        }       
     }
 
     async getSellerProfile(id){
