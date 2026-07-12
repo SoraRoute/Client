@@ -30,11 +30,30 @@ class CustomerRepository{
         const [rows]=await db.query(sql, [id]);
         return rows[0];
     }
-    async updatePassword(id, hashedPassword){
+    async updatePassword(email, hashedPassword){
         const sql=` UPDATE users
         SET password=?
-        WHERE id=?`;
-        await db.query(sql, [hashedPassword,id]);
+        WHERE email=?`;
+       const [result]=await db.query(sql,[
+        hashedPassword, email
+       ]);
+       return result.affectedRows;
+    }
+    async updateCustomerProfile(customerId, customerData){
+        const sql=`
+        UPDATE users
+        SET 
+        first_name=?,
+        last_name=?,
+        mobile=?
+        where id=?`;
+        const [result]=await db.query(sql,[
+            customerData.first_name,
+            customerData.last_name,
+            customerData.mobile,
+            customerId
+        ]);
+        return result.affectedRows;
     }
 }
 module.exports=new CustomerRepository();

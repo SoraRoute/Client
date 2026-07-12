@@ -91,7 +91,76 @@ class customerService {
             customer: customerResponse
         };
     }
+    async forgotPassword(email){
+        const customer = await customerRepository.findCustomerByEmail(
+            email
+        );
+        if(!customer){
+            throw new Error("Customer not found");
 
+        }
+        await verificationCodeService.sendVerificationCode(
+            email,
+            "RESET_PASSWORD"
+        );
+        return {
+            success:true,
+            message:"OTP sent successfully"
+        };
+    }
+    async resetPassword(email,otp, newPassword){
+        await verificationCodeService.verifyCode(
+            email,
+            "RESET_PASSWORD",
+            otp
+        );
+        const hashedPassword=await  passwordUtil.hashPassword(
+            newPassword
+        );
+        const rowsUpdated=await customerRepository.updatePassword(
+            email,hashedPassword
+        );
+        if(rowsUpdated===0){
+            throw new Error("Customer not found");
+        }
+        return {
+            success:true,
+            message:"Password reset successfully"
+        };
+    }
+    async getCustomerProfile(customerId){
+        const customer=await customerRepository.findCustomerById(
+            customerId
+        );
+        if(!customer){
+            throw new Error("customer not found");
+
+        }
+        delete customer.password;
+        return {
+            success:true,
+            customer
+        };
+    }
+async updateCustomerProfile(customerId,customerData){
+    const customer=await customerRepository.findCustomerById(
+        customerId
+    );
+    if(!customer){
+        throw new Error("Customer not found");
+    }
+    const rowsUpdated=await customerRepository.updateCustomerProfile(
+        customerId,
+        customerData
+    );
+    if(rowsUpdated===0){
+        throw new Error("Profile update failed");
+    }
+    return{
+        success:true,
+        message:"Profile updated successfully"
+    };
+}
 }
 
 module.exports = new customerService();

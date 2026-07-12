@@ -50,5 +50,69 @@ async loginCustomer(req,res){
             messasge:error.message
         });
     }
-}}
+}
+async forgotPassword(req,res){
+    try{
+        const result=await customerService.forgotPassword(
+            req.body.email
+        );
+        return res.status(200).json(result);
+
+    }
+
+    catch(error){
+        return res.status(400).json({
+            success:false,
+            message:error.message
+        });
+    }
+}
+async resetPassword(req,res){
+    try{
+        const result=await customerService.resetPassword(
+            req.body.email,
+            req.body.otp,
+            req.body.newPassword
+        );
+        return res.status(200).json(result);
+    }catch(error){
+
+        return res.status(400).json({
+        success:false,
+        message: error.message})
+    }
+}
+async getCustomerProfile(req, res){
+    try{
+        const result=await customerService.getCustomerProfile(
+            req.customerId
+        );
+        return res.status(200).json(result);
+    }
+    catch(error){
+        return res.status(400).json({
+            success:false,
+            message:error.message
+        });
+    }
+}
+async updateCustomerProfile(req,res){
+    try{
+        const result = await customerService.updateCustomerProfile(
+            req.customerId,
+            req.body
+        );
+        return res.status(200).json(result);
+    }catch(error){
+        return res.status(400).json({
+            success:false,
+            message:error.message
+        });
+    }
+}
+
+
+
+
+}
 module.exports=new CustomerController();
