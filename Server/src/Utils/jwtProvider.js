@@ -28,7 +28,11 @@
  */
 require("dotenv").config();
 const jwt=require('jsonwebtoken');
+
 const secretKey=process.env.JWT_SECRET;
+
+// Modifications Done for Seller
+const verificationSecret = process.env.JWT_VERIFICATION_SECRET;
 
 class JwtProvider{
     /**
@@ -66,5 +70,37 @@ class JwtProvider{
             throw new Error("Invalid or Expired Token");
         }
     }
+
+    //Mofications done for verification token generation for seller verification
+
+    generateVerificationToken(email){
+        return jwt.sign(
+            {
+                email,
+                purpose: "REGISTER",
+            },
+            verificationSecret,
+            {
+                expiresIn: "10m"
+            }
+        );
+    }
+
+    verifyVerificationToken(token){
+        try{
+            const decode = jwt.verify(token,verificationSecret);
+
+            if(decode.purpose !== "REGISTER"){
+                throw new Error("Invalid Verification Token");
+            }
+
+            return decode;
+
+        }catch(error){
+            throw new Error("Invalid or Expired Verification Token.")
+        }
+    }
+
+
 }
 module.exports=new JwtProvider();
