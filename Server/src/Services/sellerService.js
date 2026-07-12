@@ -2,14 +2,69 @@ const db = require("../Config/dbConnection");
 const bcrypt = require("bcrypt");
 const sellerRepository = require("../Repositories/sellerRepository");
 const jwtProvider = require("../Utils/jwtProvider");
+const otpGenerator = require("../Utils/otpGenerator");
+const sendMail = require("../Utils/sendMail");
 
 
 class SellerService{
-    async registerSeller(sellerData){
+    async sendSellerOtp(email){
         const connection = await db.getConnection();
 
         try{
             await connection.beginTransaction();
+
+            const existingSeller = await sellerRepository.findSellerByEmail(connection,email);
+
+            if(existingSeller){
+                throw new Error("Seller Already Registered.");
+            }
+
+            const otp = otpGenerator.generateOTP();
+
+            const otpHash = await bcrypt.hash(otp,10);
+
+            const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
+
+            await sellerRepository.deleteOtp(connection,email,"REGISTER");
+
+            await sellerRepository.saveOtp(connection,email,otpHash,"REGISTER",expiresAt);
+
+            await sendMail.sendEmail(
+                email,
+                "Seller Registration OTP",
+                `
+                    <h2>Your OTP is ${otp}</h2>
+                    <p>This OTP is valid for 10 minutes.</p>
+                `
+            );
+            await connection.commit();
+            
+            return {
+                message: "OTP sent successfully."
+            };
+
+        }catch(error){
+            await connection.rollback();
+            throw error;
+
+        }finally{
+            connection.release();
+
+        }
+    }
+
+    async registerSeller(sellerData,verificationToken){
+        const connection = await db.getConnection();
+
+        try{
+
+            await connection.beginTransaction();
+
+            const decodedToken = jwtProvider.verifyVerificationToken(verificationToken);
+
+            if(decodedToken.email !== sellerData.email){
+                throw new Error("Email Does not match the verified Email.");
+            }
 
             const existingSeller = await sellerRepository.findSellerByEmail(
                 connection,sellerData.email

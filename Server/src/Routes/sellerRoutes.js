@@ -7,6 +7,10 @@ const authMiddleware = require("../middleware/authMiddleware")
 
 const roleMiddleware = require("../middleware/roleMiddleware")
 
+router.post("/send-otp",sellerController.sendSellerOtp);
+
+router.post("/verify-otp",sellerController.verifySellerOtp);
+
 router.post("/register",sellerController.registerSeller);
 
 router.post("/login",sellerController.loginSeller);

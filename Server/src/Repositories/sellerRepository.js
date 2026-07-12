@@ -1,9 +1,25 @@
 class SellerRepository{
+
+    async saveOtp(connection,email,otpHash,purpose,expires_at){
+        await connection.query("Insert Into verification_codes(email,otp_hash,purpose,expires_at) values (?,?,?,?)",[email,otpHash,purpose,expires_at]          
+        );
+    }
+
     async findSellerByEmail(connection,email){
         const [rows] = await connection.query(
             "select * from sellers where email = ?",[email]
         );
-        return rows;
+        return rows[0];
+    }
+
+    async findOtpByEmail(connection,email,purpose){
+        const [rows] = await connection.query("Select * from verification_codes where email = ? and purpose = ?",[email,purpose]);
+
+        return rows[0];
+    }
+
+    async deleteOtp(connection,email,purpose){
+        await connection.query("Delete from verification_codes where email = ? and purpose = ?",[email,purpose]);
     }
 
     async createSeller(connection,seller){

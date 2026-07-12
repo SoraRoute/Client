@@ -1,11 +1,55 @@
 const sellerService = require("../Services/sellerService");
 
 class SellerController {
+    async sendSellerOtp(req,res){
+        try{
+            const {email} = req.body;
+            const result = await sellerService.sendSellerOtp(email);
+
+            return res.status(200).json({
+                success: true,
+                message: result.message
+            });
+        }catch(error){
+            return res.status(400).json({
+                success: false,
+                message: error.message
+            });  
+        }
+    }
+
+    async verifySellerOtp(req,res){
+        try{
+            const{email,otp} = req.body;
+
+            const result = await sellerService.verifySellerOtp(email,otp);
+
+            return res.status(200).json({
+                success: true,
+                message: result.message,
+                verificationToken: result.verificationToken
+            });
+
+        } catch(error){
+            return res.status(400).json({
+                success: false,
+                message: error.message
+            });
+        }
+    }
+
     async registerSeller(req, res) {
         try {
             const sellerData = req.body;
+            const authHeader = req.headers.authorization;
 
-            const result = await sellerService.registerSeller(sellerData);
+            if (!authHeader || !authHeader.startsWith("Bearer ")) {
+                throw new Error("Verification token is required.");
+            }
+
+            const verificationToken = authHeader.split(" ")[1];
+
+            const result = await sellerService.registerSeller(sellerData,verificationToken);
 
             return res.status(201).json({
                 success: true,
@@ -26,7 +70,7 @@ class SellerController {
             const loginData = req.body;
             const result = await sellerService.loginSeller(loginData);
 
-            return res.status(201).json({
+            return res.status(200).json({
                 success: true,
                 message: result.message,
                 token: result.token
@@ -46,7 +90,7 @@ class SellerController {
             const result = await sellerService.getSellerProfile(sellerId);
 
             return res.status(200).json({
-                sucess: true,
+                success: true,
                 message: "Seller Profile Fetched Successfully.",
                 sellerData: result
             })
