@@ -49,3 +49,4 @@ class Password{
             return await bcrypt.compare(password, hashedPassword);
         }
     }
+    module.exports = new Password();

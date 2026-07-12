@@ -129,7 +129,6 @@ class VerificationCodeService {
             email,
             purpose
         );
-
         return true;
     }
 
