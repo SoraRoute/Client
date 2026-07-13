@@ -7,7 +7,7 @@ const sendMail = require("../Utils/sendMail");
 
 
 class SellerService{
-    async sendSellerOtp(email){
+    async sendSellerOtp(email,purpose){
         const connection = await db.getConnection();
 
         try{
@@ -15,8 +15,12 @@ class SellerService{
 
             const existingSeller = await sellerRepository.findSellerByEmail(connection,email);
 
-            if(existingSeller){
+            if(purpose === "REGISTER" &&existingSeller){
                 throw new Error("Seller Already Registered.");
+            }
+
+            if(purpose === "RESET_PASSWORD" &&!existingSeller){
+                throw new Error("Seller does not exist.");
             }
 
             const otp = otpGenerator.generateOTP();
@@ -25,18 +29,21 @@ class SellerService{
 
             const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
 
-            await sellerRepository.deleteOtp(connection,email,"REGISTER");
+            await sellerRepository.deleteOtp(connection,email,purpose);
 
-            await sellerRepository.saveOtp(connection,email,otpHash,"REGISTER",expiresAt);
+            await sellerRepository.saveOtp(connection,email,otpHash,purpose,expiresAt);
+
+            const subject = purpose === "REGISTER" ? "Seller Registration OTP" : " Reset Password OTP";
 
             await sendMail.sendEmail(
                 email,
-                "Seller Registration OTP",
+                subject,
                 `
-                    <h2>Your OTP is ${otp}</h2>
+                   <h2>Your OTP is ${otp}</h2>
                     <p>This OTP is valid for 10 minutes.</p>
                 `
             );
+
             await connection.commit();
             
             return {
@@ -102,13 +109,13 @@ class SellerService{
         }
     }
 
-    async verifySellerOtp(email,otp){
+    async verifySellerOtp(email,otp,purpose){
         const connection = await db.getConnection();
          
         try{
             await connection.beginTransaction();
 
-            const otpRecord = await sellerRepository.findOtpByEmail(connection,email,"REGISTER");
+            const otpRecord = await sellerRepository.findOtpByEmail(connection,email,purpose);
 
             if(!otpRecord){
                 throw new Error("OTP not found or has expired.");
@@ -124,16 +131,21 @@ class SellerService{
                 throw new Error("Invalid OTP.");
             }
 
-            await sellerRepository.deleteOtp(connection,email,"REGISTER");
+            await sellerRepository.deleteOtp(connection,email,purpose);
 
-            const verificationToken = jwtProvider.generateVerificationToken(email);
+            let result = {
+                message : "OTP Verified Successfully."
+            };
+
+            if(purpose === "REGISTER"){
+                result.message = "Email Verified Sucessfully.";
+                result.verificationToken = jwtProvider.generateVerificationToken(email);
+
+            }
 
             await connection.commit();
 
-            return{
-                message:"Email Verified Successfully.",
-                verificationToken
-            }
+            return result;
 
         }catch(error){
             await connection.rollback();
@@ -175,11 +187,44 @@ class SellerService{
             };
         }
         catch(error){
+            await connection.rollback();
             throw error;
         }
         finally{
             connection.release();
         }       
+    }
+
+    async resetPassword(email,otp,newPassword){
+        const connection = await db.getConnection();
+
+        try{
+            await connection.beginTransaction();
+
+            const seller = await sellerRepository.findSellerByEmail(connection,email);
+
+            if(!seller){
+                throw new Error("Seller does not exist.");
+            }
+
+            await this.verifySellerOtp(email,otp,"RESET_PASSWORD");
+
+            const hashedPassword = await bcrypt.hash(newPassword,10);
+
+            await sellerRepository.updateSellerPassword(connection,email,hashedPassword);
+
+            await connection.commit();
+
+            return{
+                message: "Password Changed Sucessfully."
+            };
+        }catch(error){
+            await connection.rollback();
+            throw error;
+        }
+        finally{
+            connection.release();
+        }   
     }
 
     async getSellerProfile(id){
@@ -198,6 +243,7 @@ class SellerService{
             connection.release();
         }
     }
+
 }
 
 module.exports = new SellerService();

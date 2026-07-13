@@ -4,12 +4,13 @@ class SellerController {
     async sendSellerOtp(req,res){
         try{
             const {email} = req.body;
-            const result = await sellerService.sendSellerOtp(email);
+            const result = await sellerService.sendSellerOtp(email,"REGISTER");
 
             return res.status(200).json({
                 success: true,
                 message: result.message
             });
+
         }catch(error){
             return res.status(400).json({
                 success: false,
@@ -22,7 +23,7 @@ class SellerController {
         try{
             const{email,otp} = req.body;
 
-            const result = await sellerService.verifySellerOtp(email,otp);
+            const result = await sellerService.verifySellerOtp(email,otp,"REGISTER");
 
             return res.status(200).json({
                 success: true,
@@ -84,6 +85,43 @@ class SellerController {
         }  
     }
 
+    async forgotPassword(req,res){
+        try{
+            const{email} = req.body;
+
+            const result = await sellerService.sendSellerOtp(email,"RESET_PASSWORD");
+
+            return res.status(200).json({
+                sucess: true,
+                message: result.message
+            });
+        } catch(error){
+            return res.status(400).json({
+                success: false,
+                message: error.message
+            });
+        }
+    }
+
+    async resetPassword(req,res){
+        try{
+            const{email,otp,newPassword} = req.body;
+
+            const result = await sellerService.resetPassword(email,otp,newPassword);
+
+            return res.status(200).json({
+                success: true,
+                message: result.message
+            });
+
+        }catch(error){
+            return res.status(400).json({
+                sucess:false,
+                message: error.message
+            });
+        }
+    }
+    
     async getSellerProfile(req,res){
         try{
             const sellerId = req.user.sellerId;

@@ -17,4 +17,8 @@ router.post("/login",sellerController.loginSeller);
 
 router.get("/profile",authMiddleware,roleMiddleware("seller"),sellerController.getSellerProfile);
 
+router.post("/forgot-password",sellerController.forgotPassword);
+
+router.post("/reset-password",sellerController.resetPassword);
+
 module.exports = router;

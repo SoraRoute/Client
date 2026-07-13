@@ -22,6 +22,7 @@ class SellerRepository{
         await connection.query("Delete from verification_codes where email = ? and purpose = ?",[email,purpose]);
     }
 
+
     async createSeller(connection,seller){
         const[result] = await connection.query(
             "Insert Into sellers(seller_name,email,mobile,passwordd,gstin) Values (?,?,?,?,?)",
@@ -116,6 +117,10 @@ class SellerRepository{
         );
 
         return rows[0];
+    }
+
+    async updateSellerPassword(connection,email,hashedPassword){
+        await connection.query("update sellers set passwordd = ? where email = ?",[hashedPassword,email]);
     }
 
 }
