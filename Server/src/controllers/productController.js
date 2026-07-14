@@ -1,3 +1,4 @@
+const { deleteProduct } = require("../Repositories/productRepository");
 const productServices = require("../Services/productServices");
 const ProductService = require("../Services/productServices");
 
@@ -48,9 +49,6 @@ class ProductController{
 
             const product = await productServices.getProductById(productId,sellerId);
 
-            ///console.log(req.user);
-            console.log(req.params.id);
-
             return res.status(200).json({
                 success: true,
                 message: "Product Fetched Successfully.",
@@ -64,6 +62,71 @@ class ProductController{
             });
         }
 
+    }
+
+    async updateProduct(req,res){
+        try{
+            const sellerId = req.user.sellerId;
+            const productId = req.params.id;
+
+            await productServices.updateProduct(
+                productId,
+                sellerId,
+                req.body
+            );
+
+            return res.status(200).json({
+                success: true,
+                message: "Product Updated Successfully."
+            });
+
+        }catch (error) {
+            return res.status(400).json({
+                success: false,
+                message: error.message
+            });
+        }
+    }
+
+    async deleteProduct(req,res){
+        try{
+            const sellerId = req.user.sellerId;
+            const prodcutId = req.params.id;
+
+            await productServices.deleteProduct(prodcutId,sellerId);
+
+            return res.status(200).json({
+                success: true,
+                message: "Product Deleted Successfully."
+            });
+
+        }catch (error) {
+            return res.status(400).json({
+                success: false,
+                message: error.message
+            });
+        }
+    }
+
+    async updateStatus(req,res){
+        try{
+            const sellerId = req.user.sellerId;
+            const prodcutId = req.params.id;
+            const {status} = req.body;
+
+            await productServices.updateStatus(prodcutId,sellerId);
+
+            return res.status(200).json({
+                success: true,
+                message: "Product Status Updated Successfully."
+            });
+            
+        }catch (error) {
+            return res.status(400).json({
+                success: false,
+                message: error.message
+            });
+        }
     }
 }
 

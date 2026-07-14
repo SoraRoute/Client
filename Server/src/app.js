@@ -24,6 +24,7 @@ app.use("/api/customer-wishlist", customerWishlistRoutes);
 app.use("/api/products",productRoutes);
 app.use("/api/my-products",productRoutes);
 app.use("/api/:id",productRoutes);
+app.use("api/:id",productRoutes);
 
 app.use("/uploads", express.static("uploads"));
 

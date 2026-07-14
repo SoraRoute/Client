@@ -33,4 +33,19 @@ router.get("/:id",authMiddleware,
     productController.getProductById
 );
 
+router.put("/:id",authMiddleware,
+    roleMiddleware("seller"),
+    productController.updateProduct
+);
+
+router.delete("/:id",authMiddleware,
+    roleMiddleware("seller"),
+    productController.deleteProduct
+);
+
+router.put("/:id",authMiddleware,
+    roleMiddleware("seller"),
+    productController.updateStatus
+)
+
 module.exports = router;
