@@ -7,18 +7,41 @@ const authMiddleware = require("../middleware/authMiddleware")
 
 const roleMiddleware = require("../middleware/roleMiddleware")
 
-router.post("/send-otp",sellerController.sendSellerOtp);
+router.post(
+    "/send-otp",
+    sellerController.sendSellerOtp
+);
 
-router.post("/verify-otp",sellerController.verifySellerOtp);
+router.post(
+    "/verify-otp",
+    sellerController.verifySellerOtp
+);
 
-router.post("/register",sellerController.registerSeller);
+router.post(
+    "/register",
+    sellerController.registerSeller
+);
 
-router.post("/login",sellerController.loginSeller);
+router.post(
+    "/login",
+    sellerController.loginSeller
+);
 
-router.get("/profile",authMiddleware,roleMiddleware("seller"),sellerController.getSellerProfile);
+router.get(
+    "/profile",
+    authMiddleware,
+    roleMiddleware("seller"),
+    sellerController.getSellerProfile
+);
 
-router.post("/forgot-password",sellerController.forgotPassword);
+router.post(
+    "/forgot-password",
+    sellerController.forgotPassword
+);
 
-router.post("/reset-password",sellerController.resetPassword);
+router.post(
+    "/reset-password",
+    sellerController.resetPassword
+);
 
 module.exports = router;

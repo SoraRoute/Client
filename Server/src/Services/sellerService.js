@@ -1,13 +1,17 @@
-const db = require("../Config/dbConnection");
 const bcrypt = require("bcrypt");
+
+const db = require("../Config/dbConnection");
 const sellerRepository = require("../Repositories/sellerRepository");
 const jwtProvider = require("../Utils/jwtProvider");
 const otpGenerator = require("../Utils/otpGenerator");
 const sendMail = require("../Utils/sendMail");
+const constants = require("../Constants/OTPPurpose")
 
 
 class SellerService{
+
     async sendSellerOtp(email,purpose){
+        
         const connection = await db.getConnection();
 
         try{
@@ -15,7 +19,7 @@ class SellerService{
 
             const existingSeller = await sellerRepository.findSellerByEmail(connection,email);
 
-            if(purpose === "REGISTER" &&existingSeller){
+            if(purpose === constants.REGISTER && existingSeller){
                 throw new Error("Seller Already Registered.");
             }
 
@@ -33,7 +37,7 @@ class SellerService{
 
             await sellerRepository.saveOtp(connection,email,otpHash,purpose,expiresAt);
 
-            const subject = purpose === "REGISTER" ? "Seller Registration OTP" : " Reset Password OTP";
+            const subject = purpose === constants.REGISTER ? "Seller Registration OTP" : " Reset Password OTP";
 
             await sendMail.sendEmail(
                 email,
@@ -137,7 +141,7 @@ class SellerService{
                 message : "OTP Verified Successfully."
             };
 
-            if(purpose === "REGISTER"){
+            if(purpose === constants.REGISTER){
                 result.message = "Email Verified Sucessfully.";
                 result.verificationToken = jwtProvider.generateVerificationToken(email);
 

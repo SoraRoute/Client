@@ -16,13 +16,6 @@
  * - Seller Authentication
  * - Admin Authentication
  *
- * Token Payload Example:
- * {
- *    id,
- *    email,
- *    role
- * }
- *
  * Author: Shared Module
  * ---------------------------------------------------------
  */

@@ -1,39 +1,56 @@
 class SellerRepository{
 
     async saveOtp(connection,email,otpHash,purpose,expires_at){
-        await connection.query("Insert Into verification_codes(email,otp_hash,purpose,expires_at) values (?,?,?,?)",[email,otpHash,purpose,expires_at]          
+        await connection.query(`
+            Insert Into verification_codes("
+                email,
+                otp_hash,
+                purpose,
+                expires_at) 
+                values (?,?,?,?)`,[email,otpHash,purpose,expires_at]          
         );
     }
 
     async findSellerByEmail(connection,email){
         const [rows] = await connection.query(
-            "select * from sellers where email = ?",[email]
+            "Select * from sellers where email = ?",[email]
         );
         return rows[0];
     }
 
     async findOtpByEmail(connection,email,purpose){
-        const [rows] = await connection.query("Select * from verification_codes where email = ? and purpose = ?",[email,purpose]);
+        const [rows] = await connection.query(`
+                Select * from verification_codes where email = ? and purpose = ?`,
+                [email,purpose]
+            );
 
         return rows[0];
     }
 
     async deleteOtp(connection,email,purpose){
-        await connection.query("Delete from verification_codes where email = ? and purpose = ?",[email,purpose]);
+        await connection.query(`
+            Delete from verification_codes where email = ? and purpose = ?`,
+            [email,purpose]
+        );
     }
-
 
     async createSeller(connection,seller){
         const[result] = await connection.query(
-            "Insert Into sellers(seller_name,email,mobile,passwordd,gstin) Values (?,?,?,?,?)",
-            [
-                seller.seller_name,
-                seller.email,
-                seller.mobile,
-                seller.passwordd,
-                seller.gstin
-            ]
+            `Insert Into sellers(
+                seller_name,
+                email,
+                mobile,
+                passwordd,gstin) 
+                Values (?,?,?,?,?)`,
+                [
+                    seller.seller_name,
+                    seller.email,
+                    seller.mobile,
+                    seller.passwordd,
+                    seller.gstin
+                ]
         );
+
         return result.insertId;
     }
 
@@ -113,14 +130,19 @@ class SellerRepository{
     }
 
     async getSellerById(connection,id){
-        const [rows] = await connection.query("SELECT id,seller_name,email,mobile FROM sellers WHERE id = ?",[id]
+        const [rows] = await connection.query(
+                "SELECT id,seller_name,email,mobile FROM sellers WHERE id = ?",
+                [id]
         );
 
         return rows[0];
     }
 
     async updateSellerPassword(connection,email,hashedPassword){
-        await connection.query("update sellers set passwordd = ? where email = ?",[hashedPassword,email]);
+        await connection.query(
+            "update sellers set passwordd = ? where email = ?",
+            [hashedPassword,email]
+        );
     }
 
 }

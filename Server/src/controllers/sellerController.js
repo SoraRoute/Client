@@ -1,10 +1,11 @@
 const sellerService = require("../Services/sellerService");
+const constants = require("../Constants/OTPPurpose");
 
-class SellerController {
+class SellerController{
     async sendSellerOtp(req,res){
         try{
             const {email} = req.body;
-            const result = await sellerService.sendSellerOtp(email,"REGISTER");
+            const result = await sellerService.sendSellerOtp(email,constants.REGISTER);
 
             return res.status(200).json({
                 success: true,
@@ -23,7 +24,7 @@ class SellerController {
         try{
             const{email,otp} = req.body;
 
-            const result = await sellerService.verifySellerOtp(email,otp,"REGISTER");
+            const result = await sellerService.verifySellerOtp(email,otp,constants.REGISTER);
 
             return res.status(200).json({
                 success: true,
@@ -89,7 +90,7 @@ class SellerController {
         try{
             const{email} = req.body;
 
-            const result = await sellerService.sendSellerOtp(email,"RESET_PASSWORD");
+            const result = await sellerService.sendSellerOtp(email,constants.RESET_PASSWORD);
 
             return res.status(200).json({
                 sucess: true,
