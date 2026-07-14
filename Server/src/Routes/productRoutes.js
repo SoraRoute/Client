@@ -23,4 +23,14 @@ router.post("/add",authMiddleware,
     productController.addProduct
 );
 
+router.get("/my-products",authMiddleware,
+    roleMiddleware("seller"),
+    productController.getSellerProducts
+);
+
+router.get("/:id",authMiddleware,
+    roleMiddleware("seller"),
+    productController.getProductById
+);
+
 module.exports = router;

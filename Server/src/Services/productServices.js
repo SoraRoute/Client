@@ -45,6 +45,51 @@ class ProductService{
             connection.release();
         }
     }
+
+    async getSellerProducts(sellerId){
+        const connection = await db.getConnection();
+
+        try{
+            await connection.beginTransaction();
+            const products = await productRepository.getSellerProducts(connection,sellerId);
+
+            await connection.commit();
+            return products;
+
+        } catch(error){
+            await connection.rollback();
+            throw error;
+
+        } finally{
+            connection.release();
+        }
+    }
+
+    async getProductById(productId,sellerId){
+        const connection = await db.getConnection();
+
+        try{
+            const products = await productRepository.getProductById(connection,productId,sellerId);
+
+            if(!products){
+                throw new Error("Product Not Found");
+            }
+
+            const images = await productRepository.getProductImages(connection,productId);
+
+            products.images = images;
+            await connection.commit();
+
+            return products;
+
+        }catch(error){
+            await connection.rollback();
+            throw error;
+
+        }finally{
+            connection.release();
+        }
+    }
 }
 
 module.exports = new ProductService();
