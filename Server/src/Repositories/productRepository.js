@@ -159,6 +159,14 @@ class ProductRepository{
 
     return rows[0];
 }
+
+    async countProductsByCategoryId(connection,categoryId){
+        const query = `Select Count(*) As total from products where category_id = ?`;
+
+        const [result] = await connection.query(query,[categoryId]);
+
+        return result[0].total;
+    }
 }
 
 module.exports = new ProductRepository();
