@@ -23,4 +23,29 @@ router.post("/add",authMiddleware,
     productController.addProduct
 );
 
+router.get("/my-products",authMiddleware,
+    roleMiddleware("seller"),
+    productController.getSellerProducts
+);
+
+router.get("/:id",authMiddleware,
+    roleMiddleware("seller"),
+    productController.getProductById
+);
+
+router.put("/:id",authMiddleware,
+    roleMiddleware("seller"),
+    productController.updateProduct
+);
+
+router.delete("/:id",authMiddleware,
+    roleMiddleware("seller"),
+    productController.deleteProduct
+);
+
+router.put("/:id",authMiddleware,
+    roleMiddleware("seller"),
+    productController.updateStatus
+)
+
 module.exports = router;

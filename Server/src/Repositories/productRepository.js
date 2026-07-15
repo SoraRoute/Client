@@ -50,6 +50,101 @@ class ProductRepository{
         }
 
     }
+
+    async getSellerProducts(connection,sellerId){
+        const query = `Select
+            id,
+            category_id,
+            title,
+            description,
+            brand,
+            price,
+            discount_price,
+            stock,
+            status,
+            created_at
+        From products where seller_id = ?
+        Order by created_at Desc
+        `;
+
+        const [rows] = await connection.query(query,[sellerId]);
+
+        return rows;
+    }
+
+    async getProductById(connection,productId,sellerId){
+        const query = `Select * from products where id = ? and seller_id = ?
+        `;
+
+        const [rows] = await connection.query(query,[productId,sellerId]);
+
+        return rows[0];
+    }
+
+    async getProductImages(connection,productId){
+        const query = `Select
+            id,
+            image_url,
+            public_id
+        from product_images
+        where product_id = ? 
+        `;
+
+        const [images] = await connection.query(query,[productId]);
+
+        return images;
+    }
+
+    async updateProduct(connection,productId,sellerId,productData){
+        const query =  `Update products Set
+            category_id = ?,
+            title = ?,
+            description = ?,
+            brand = ?,
+            price = ?,
+            discount_price = ?,
+            stock = ?,
+            status = ?
+        where id = ? and
+        seller_id = ?;`
+
+        const values = [
+            productData.category_id,
+            productData.title,
+            productData.description,
+            productData.brand,
+            productData.price,
+            productData.discount_price,
+            productData.stock,
+            productData.status,
+            productId,
+            sellerId
+        ];
+
+        const [result] = await connection.query(query,values);
+
+        return result;
+    }
+
+    async deleteProduct(connection,productId,sellerId){
+        const query = `Delete From products where id = ? and seller_id = ?`;
+
+        const [result] = await connection.query(query,[productId,sellerId]);
+
+        return result;
+    }
+
+    async deleteProductImages(connection,productId){
+        const query = 'Delete from product_images where product_id = ?';
+
+        await connection.query(query,[productId]);
+    }
+
+    async updateStatus(connection,productId,sellerId){
+        const query = `Update products Set status = ? where id = ? and seller_id = ?`;
+
+        await connection.query(query,[productId,sellerId]);
+    }
 }
 
 module.exports = new ProductRepository();
