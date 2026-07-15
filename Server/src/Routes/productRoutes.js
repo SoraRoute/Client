@@ -43,7 +43,7 @@ router.delete("/:id",authMiddleware,
     productController.deleteProduct
 );
 
-router.put("/:id",authMiddleware,
+router.patch("/:id/status",authMiddleware,
     roleMiddleware("seller"),
     productController.updateStatus
 )

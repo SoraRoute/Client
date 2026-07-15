@@ -10,6 +10,8 @@ const customerAddressRoutes=require("./Routes/customerAddressRoutes");
 
 const customerWishlistRoutes=require("./Routes/customerWishlistRoutes");
 
+const categoryRoutes = require("./Routes/categoryRoutes");
+
 const app = express();
 app.use(express.json());
 
@@ -23,10 +25,10 @@ app.use("/api/customer-wishlist", customerWishlistRoutes);
 
 app.use("/api/products",productRoutes);
 app.use("/api/my-products",productRoutes);
-app.use("/api/:id",productRoutes);
-app.use("api/:id",productRoutes);
 
 app.use("/uploads", express.static("uploads"));
+
+app.use("/api/categories",categoryRoutes);
 
 
 module.exports = app;
