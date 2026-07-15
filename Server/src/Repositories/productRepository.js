@@ -145,6 +145,20 @@ class ProductRepository{
 
         await connection.query(query,[productId,sellerId]);
     }
+    //added finding product method through product id only(Nishtha)
+     async findProductById(productId) {
+
+    const sql = `
+        SELECT *
+        FROM products
+        WHERE id = ?
+        LIMIT 1
+    `;
+
+    const [rows] = await db.query(sql, [productId]);
+
+    return rows[0];
+}
 }
 
 module.exports = new ProductRepository();

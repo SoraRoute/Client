@@ -70,5 +70,6 @@ async getWishlistProducts(wishlistId) {
     ]);
     return result.affectedRows;
  }
+
 }
 module.exports=new CustomerWishlistRepository();

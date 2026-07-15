@@ -1,11 +1,17 @@
 const customerWishlistRepository = require("../Repositories/customerWishlistRepository")
 const customerRepository = require("../Repositories/customerRepository");
+const productRepository = require("../Repositories/productRepository");
 
 class CustomerWishlistService{
     async addToWishlist(customerId, productId){
         const customer=await customerRepository.findCustomerById(customerId);
         if (!customer) {
         throw new Error("Customer not found");
+    }
+const product = await productRepository.findProductById(productId);
+
+    if (!product) {
+        throw new Error("Product not found");
     }
     let wishlist=await customerWishlistRepository.getWishlistByUserId(
         customerId
@@ -27,31 +33,23 @@ class CustomerWishlistService{
     if(existingItem){
         throw new Error("Product already exists in wishlist");
     }
-    try {
-        const wishlistItemId=await customerWishlistRepository.addProductToWishlist(
-            wishlist.id,
-            productId
-        );
-
-    return {
-        success: true,
-        message: "Product added to wishlist",
+    const wishlistItemId=await customerWishlistRepository.addProductToWishlist(
+        wishlist.id,
+        productId
+    );
+    return{
+        success:true,
+        message:"Product added to wishlist",
         wishlistItemId
     };
-    } catch (error) {
-        if(error.code==="ER_NO_REFERENCED_ROW_2"){
-            throw new Error("Product not found")
-        }
-        throw error;
-        
-    }
+  
 
 
     }
     async getWishlist(customerId) {
         const customer=await customerRepository.findCustomerById(customerId);
         if(!customer){
-            throw new Error("Customer now found");
+           throw new Error("Customer not found");
 
         }
         const wishlist=await customerWishlistRepository.getWishlistByUserId(
