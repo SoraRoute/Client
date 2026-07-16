@@ -19,6 +19,7 @@ const customerPaymentRoutes = require("./Routes/customerPaymentRoutes");
 const customerReviewRoutes = require("./Routes/customerReviewRoutes");
 
 
+const adminRoutes = require("./Routes/adminRoutes");
 
 
 
@@ -42,5 +43,6 @@ app.use("/uploads", express.static("uploads"));
 
 app.use("/api/categories",categoryRoutes);
 
+app.use("/api/admin",adminRoutes);
 
 module.exports = app;

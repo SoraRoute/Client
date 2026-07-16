@@ -145,20 +145,21 @@ class ProductRepository{
 
         await connection.query(query,[productId,sellerId]);
     }
+    
     //added finding product method through product id only(Nishtha)
-     async findProductById(productId) {
+    async findProductById(productId) {
 
-    const sql = `
-        SELECT *
-        FROM products
-        WHERE id = ?
-        LIMIT 1
-    `;
+        const sql = `
+            SELECT *
+            FROM products
+            WHERE id = ?
+            LIMIT 1
+        `;
 
-    const [rows] = await db.query(sql, [productId]);
+        const [rows] = await db.query(sql, [productId]);
 
-    return rows[0];
-}
+        return rows[0];
+    }
 
     async countProductsByCategoryId(connection,categoryId){
         const query = `Select Count(*) As total from products where category_id = ?`;
