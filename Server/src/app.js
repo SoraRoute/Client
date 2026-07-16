@@ -15,6 +15,7 @@ const customerCartRoutes = require("./Routes/customerCartRoutes");
 
 const categoryRoutes = require("./Routes/categoryRoutes");
 
+const adminRoutes = require("./Routes/adminRoutes");
 
 
 
@@ -34,5 +35,6 @@ app.use("/uploads", express.static("uploads"));
 
 app.use("/api/categories",categoryRoutes);
 
+app.use("/api/admin",adminRoutes);
 
 module.exports = app;

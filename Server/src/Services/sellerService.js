@@ -222,6 +222,7 @@ class SellerService{
             return{
                 message: "Password Changed Sucessfully."
             };
+            
         }catch(error){
             await connection.rollback();
             throw error;
