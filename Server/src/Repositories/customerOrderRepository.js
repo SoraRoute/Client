@@ -31,6 +31,20 @@ class CustomerOrderRepository {
     const [result] = await db.query(sql, [orderId]);
     return result.affectedRows;
   }
- 
+async hasPurchasedProduct(customerId, productId) {
+    const sql = `
+    SELECT oi.id
+    FROM orders o
+    JOIN order_items oi
+        ON o.id = oi.order_id
+    WHERE o.user_id = ?
+      AND oi.product_id = ?
+      AND o.order_status != 'CANCELLED'
+    `;
+
+    const [rows] = await db.query(sql, [customerId, productId]);
+
+    return rows.length > 0;
+}
 }
 module.exports = new CustomerOrderRepository();
