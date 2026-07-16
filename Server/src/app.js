@@ -14,6 +14,9 @@ const customerWishlistRoutes=require("./Routes/customerWishlistRoutes");
 const customerCartRoutes = require("./Routes/customerCartRoutes");
 
 const categoryRoutes = require("./Routes/categoryRoutes");
+const customerOrderRoutes = require("./Routes/customerOrderRoutes");
+const customerPaymentRoutes = require("./Routes/customerPaymentRoutes");
+
 
 
 
@@ -27,6 +30,8 @@ app.use("/api/customers", customerRoutes);
 app.use("/api/customer-addresses", customerAddressRoutes);
 app.use("/api/customer-wishlist", customerWishlistRoutes);
 app.use("/api/customer-cart", customerCartRoutes);
+app.use("/api/customer-orders", customerOrderRoutes);
+app.use("/api/customer-payments", customerPaymentRoutes);
 
 
 

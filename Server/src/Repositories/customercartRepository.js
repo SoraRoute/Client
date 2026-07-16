@@ -65,6 +65,16 @@ class CustomerCartRepository {
         return result.affectedRows;
        
     }
+     async clearCart(cartId) {
+    const sql = `
+    DELETE FROM cart_items
+    WHERE cart_id = ?
+    `;
+
+    const [result] = await db.query(sql, [cartId]);
+
+    return result.affectedRows;
+}
 
 }
 module.exports=new CustomerCartRepository();
