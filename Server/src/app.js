@@ -18,6 +18,7 @@ const customerOrderRoutes = require("./Routes/customerOrderRoutes");
 const customerPaymentRoutes = require("./Routes/customerPaymentRoutes");
 const customerReviewRoutes = require("./Routes/customerReviewRoutes");
 const customerProductRoutes=require("./Routes/customerProductRoutes");
+const customerHomeRoutes = require("./Routes/customerHomeRoutes");
 
 
 const adminRoutes = require("./Routes/adminRoutes");
@@ -37,6 +38,7 @@ app.use("/api/customer-orders", customerOrderRoutes);
 app.use("/api/customer-payments", customerPaymentRoutes);
 app.use("/api/customer-reviews", customerReviewRoutes);
 app.use("/api/customer-products", customerProductRoutes);
+app.use("/api/customer-home", customerHomeRoutes);
 
 
 
