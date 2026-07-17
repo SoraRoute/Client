@@ -1,25 +1,24 @@
-const db=require("../Config/dbConnection");
-class CustomerProductRepository{
- async getAllProducts(){
-     const sql=`select *from products where status="ACTIVE"`;
-     const [result]= await db.query(sql);
-     return result;
-
+const db = require("../Config/dbConnection");
+class CustomerProductRepository {
+  async getAllProducts() {
+    const sql = `select *from products where status="ACTIVE"`;
+    const [result] = await db.query(sql);
+    return result;
   }
- async getProductById(productId){
-        const sql = `
+  async getProductById(productId) {
+    const sql = `
             SELECT *
             FROM products
           WHERE id = ? AND status = 'ACTIVE'
             LIMIT 1
         `;
 
-        const [rows] = await db.query(sql, [productId]);
+    const [rows] = await db.query(sql, [productId]);
 
-        return rows[0];
- }
+    return rows[0];
+  }
 
-async searchProducts(keyword) {
+  async searchProducts(keyword) {
     const sql = `
         SELECT *
         FROM products
@@ -30,9 +29,9 @@ async searchProducts(keyword) {
     const [rows] = await db.query(sql, [`%${keyword}%`]);
 
     return rows;
-}
+  }
 
-async getProductsByCategory(categoryId) {
+  async getProductsByCategory(categoryId) {
     const sql = `
         SELECT *
         FROM products
@@ -43,8 +42,8 @@ async getProductsByCategory(categoryId) {
     const [rows] = await db.query(sql, [categoryId]);
 
     return rows;
-}
-async findCategoryById(categoryId) {
+  }
+  async findCategoryById(categoryId) {
     const sql = `
         SELECT *
         FROM categories
@@ -55,6 +54,6 @@ async findCategoryById(categoryId) {
     const [rows] = await db.query(sql, [categoryId]);
 
     return rows[0];
+  }
 }
-}
-module.exports=new CustomerProductRepository();
+module.exports = new CustomerProductRepository();

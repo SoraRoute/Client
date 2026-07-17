@@ -43,5 +43,7 @@ router.post(
     "/reset-password",
     sellerController.resetPassword
 );
+//add this logout route
+router.post("/logout", authMiddleware, sellerController.logout);
 
 module.exports = router;

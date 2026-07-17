@@ -1,15 +1,18 @@
 const express = require("express");
 const app = express();
 app.use(express.json());
+const cookieParser = require("cookie-parser");
+
+app.use(cookieParser());
 const sellerRoutes = require("./Routes/sellerRoutes");
 
 const productRoutes = require("./Routes/productRoutes");
 
-const customerRoutes=require("./Routes/customerRoutes");
+const customerRoutes = require("./Routes/customerRoutes");
 
-const customerAddressRoutes=require("./Routes/customerAddressRoutes");
+const customerAddressRoutes = require("./Routes/customerAddressRoutes");
 
-const customerWishlistRoutes=require("./Routes/customerWishlistRoutes");
+const customerWishlistRoutes = require("./Routes/customerWishlistRoutes");
 
 const customerCartRoutes = require("./Routes/customerCartRoutes");
 
@@ -17,19 +20,15 @@ const categoryRoutes = require("./Routes/categoryRoutes");
 const customerOrderRoutes = require("./Routes/customerOrderRoutes");
 const customerPaymentRoutes = require("./Routes/customerPaymentRoutes");
 const customerReviewRoutes = require("./Routes/customerReviewRoutes");
-const customerProductRoutes=require("./Routes/customerProductRoutes");
+const customerProductRoutes = require("./Routes/customerProductRoutes");
 const customerHomeRoutes = require("./Routes/customerHomeRoutes");
 const aiRoutes = require("./Routes/aiRoutes");
 
-
 const adminRoutes = require("./Routes/adminRoutes");
 
-
-
-app.use("/api/seller",sellerRoutes);
-app.use("/api/products",productRoutes);
-app.use("/api/my-products",productRoutes);
-
+app.use("/api/seller", sellerRoutes);
+app.use("/api/products", productRoutes);
+app.use("/api/my-products", productRoutes);
 
 app.use("/api/customers", customerRoutes);
 app.use("/api/customer-addresses", customerAddressRoutes);
@@ -42,13 +41,10 @@ app.use("/api/customer-products", customerProductRoutes);
 app.use("/api/customer-home", customerHomeRoutes);
 app.use("/api/ai", aiRoutes);
 
-
-
-
 app.use("/uploads", express.static("uploads"));
 
-app.use("/api/categories",categoryRoutes);
+app.use("/api/categories", categoryRoutes);
 
-app.use("/api/admin",adminRoutes);
+app.use("/api/admin", adminRoutes);
 
 module.exports = app;

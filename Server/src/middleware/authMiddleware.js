@@ -29,29 +29,20 @@ const authMiddleware = (req, res, next) => {
     try {
 
         // Read Authorization header
-        const authHeader = req.headers.authorization;
+        const  token=req.cookies.access_token;
 
-        if (!authHeader) {
+        if (!token) {
             return res.status(401).json({
                 success: false,
                 message: "Authorization token is required."
             });
         }
 
-        // Expected format:
-        // Authorization: Bearer <token>
-        const token = authHeader.split(" ")[1];
-
-        if (!token) {
-            return res.status(401).json({
-                success: false,
-                message: "Invalid authorization format."
-            });
-        }
+      
 
         // Verify JWT token
         const decoded = jwtProvider.verifyToken(token);
-        console.log(decoded);
+        
 
         // Store logged-in user information
         req.user = decoded;

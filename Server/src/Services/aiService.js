@@ -1,9 +1,9 @@
 const ai = require("../Config/gemini");
-const aiRepository=require("../Repositories/aiRepository");
-class AiService{
-async chat(message){
-const products = (await aiRepository.getProductsForAI()).slice(0, 20);
-const prompt = `
+const aiRepository = require("../Repositories/aiRepository");
+class AiService {
+  async chat(message) {
+    const products = (await aiRepository.getProductsForAI()).slice(0, 20);
+    const prompt = `
 You are an AI shopping assistant for MarketHive.
 
 Answer ONLY using the products listed below.
@@ -28,29 +28,25 @@ ${JSON.stringify(products)}
 Customer question:
 ${message}
 `;
-try {
-    const response = await ai.models.generateContent({
+    try {
+      const response = await ai.models.generateContent({
         model: "models/gemma-4-26b-a4b-it",
         contents: prompt,
-    });
+      });
 
-    return {
+      return {
         success: true,
         reply: response.text,
-    };
-} catch (error) {
-    if (error.status === 503) {
-        throw new Error("AI service is temporarily busy. Please try again in a few minutes.");
+      };
+    } catch (error) {
+      if (error.status === 503) {
+        throw new Error(
+          "AI service is temporarily busy. Please try again in a few minutes.",
+        );
+      }
+
+      throw new Error("Unable to process your request.");
     }
-
-    throw new Error("Unable to process your request.");
+  }
 }
-}
-
-
-
-
-
-
-}
-module.exports=new AiService();
+module.exports = new AiService();

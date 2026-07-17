@@ -31,7 +31,7 @@ class CustomerOrderRepository {
     const [result] = await db.query(sql, [orderId]);
     return result.affectedRows;
   }
-async hasPurchasedProduct(customerId, productId) {
+  async hasPurchasedProduct(customerId, productId) {
     const sql = `
     SELECT oi.id
     FROM orders o
@@ -45,6 +45,6 @@ async hasPurchasedProduct(customerId, productId) {
     const [rows] = await db.query(sql, [customerId, productId]);
 
     return rows.length > 0;
-}
+  }
 }
 module.exports = new CustomerOrderRepository();

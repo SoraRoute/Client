@@ -45,5 +45,6 @@ router.put(
     roleMiddleware("admin"),
     AdminController.changeAdminPassword
 );
-
+//add this logout route
+router.post("/logout", authMiddleware, AdminController.logout);
 module.exports = router;

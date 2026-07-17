@@ -11,94 +11,94 @@ class CustomerOrderService {
     if (!cart) {
       throw new Error("Cart is empty");
     }
-    const cartProducts=await customerCartRepository.getCartProducts(cart.id);
-    if(cartProducts.length===0){
-        throw new Error("Cart is empty");
+    const cartProducts = await customerCartRepository.getCartProducts(cart.id);
+    if (cartProducts.length === 0) {
+      throw new Error("Cart is empty");
     }
-    let totalAmount=0;
-    for(const item of cartProducts){
-        totalAmount +=item.price*item.quantity;
+    let totalAmount = 0;
+    for (const item of cartProducts) {
+      totalAmount += item.price * item.quantity;
     }
-    const orderId=await customerOrderRepository.createOrder(customerId,totalAmount)
-    for(const item of cartProducts){
-        await customerOrderRepository.createOrderItem(
-            orderId,
-            item.id,
-            item.quantity,
-            item.price
-        );
+    const orderId = await customerOrderRepository.createOrder(
+      customerId,
+      totalAmount,
+    );
+    for (const item of cartProducts) {
+      await customerOrderRepository.createOrderItem(
+        orderId,
+        item.id,
+        item.quantity,
+        item.price,
+      );
     }
     await customerCartRepository.clearCart(cart.id);
-return {
-    success: true,
-    message: "Order placed successfully",
-    orderId
-};
-
+    return {
+      success: true,
+      message: "Order placed successfully",
+      orderId,
+    };
   }
 
-       async getOrders(customerId){
-         const customer = await customerRepository.findCustomerById(customerId);
+  async getOrders(customerId) {
+    const customer = await customerRepository.findCustomerById(customerId);
     if (!customer) {
       throw new Error("Customer not found");
     }
-    const orders=await customerOrderRepository.getOrdersByUserId(customerId);
-  
-    return{
-        success:true,
-        orders
+    const orders = await customerOrderRepository.getOrdersByUserId(customerId);
+
+    return {
+      success: true,
+      orders,
     };
-
-       }
-       async getOrderById(customerId, orderId){
-         const customer = await customerRepository.findCustomerById(customerId);
+  }
+  async getOrderById(customerId, orderId) {
+    const customer = await customerRepository.findCustomerById(customerId);
     if (!customer) {
       throw new Error("Customer not found");
     }
-    const orders=await customerOrderRepository.getOrderById(orderId);
+    const orders = await customerOrderRepository.getOrderById(orderId);
     if (!orders) {
-    throw new Error("Order not found");
-}
-if (orders.user_id !== customerId) {
-    throw new Error("Unauthorized");
-}
-    return{
-        success:true,
-        orders
+      throw new Error("Order not found");
     }
-       }
-       async cancelOrder(customerId, orderId) {
-
+    if (orders.user_id !== customerId) {
+      throw new Error("Unauthorized");
+    }
+    return {
+      success: true,
+      orders,
+    };
+  }
+  async cancelOrder(customerId, orderId) {
     const customer = await customerRepository.findCustomerById(customerId);
 
     if (!customer) {
-        throw new Error("Customer not found");
+      throw new Error("Customer not found");
     }
 
     const order = await customerOrderRepository.getOrderById(orderId);
 
     if (!order) {
-        throw new Error("Order not found");
+      throw new Error("Order not found");
     }
 
     if (order.user_id !== customerId) {
-        throw new Error("Unauthorized");
+      throw new Error("Unauthorized");
     }
 
     if (order.order_status === "CANCELLED") {
-        throw new Error("Order already cancelled");
+      throw new Error("Order already cancelled");
     }
 
     const rowsUpdated = await customerOrderRepository.cancelOrder(orderId);
 
     if (rowsUpdated === 0) {
-        throw new Error("Failed to cancel order");
+      throw new Error("Failed to cancel order");
     }
 
     return {
-        success: true,
-        message: "Order cancelled successfully"
+      success: true,
+      message: "Order cancelled successfully",
     };
-}
+  }
 }
 module.exports = new CustomerOrderService();

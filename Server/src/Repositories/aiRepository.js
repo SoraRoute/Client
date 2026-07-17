@@ -1,7 +1,7 @@
-const db=require("../Config/dbConnection");
-class aiRepository{
-async getProductsForAI(){
-    const sql=`SELECT
+const db = require("../Config/dbConnection");
+class aiRepository {
+  async getProductsForAI() {
+    const sql = `SELECT
     p.id,
     p.title,
     p.brand,
@@ -13,8 +13,8 @@ FROM products p
 LEFT JOIN categories c
 ON p.category_id = c.id
 WHERE p.status = 'ACTIVE'`;
-const [rows]=await db.query(sql);
-return rows;
+    const [rows] = await db.query(sql);
+    return rows;
+  }
 }
-}
-module.exports=new aiRepository();
+module.exports = new aiRepository();
