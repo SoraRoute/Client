@@ -42,7 +42,6 @@ class JwtProvider{
      */
     generateToken(payload){
         return jwt.sign(payload, secretKey,{expiresIn:"24h"});
-
     }
 
     /**

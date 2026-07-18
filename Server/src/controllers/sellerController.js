@@ -149,6 +149,48 @@ class SellerController {
       });
     }
   }
+
+  async updateSellerProfile(req, res) {
+        try {
+            const sellerId = req.user.sellerId;
+            const sellerData = req.body;
+
+            const result = await sellerService.updateSellerProfile(
+                sellerId,
+                sellerData
+            );
+
+            return res.status(200).json(result);
+
+        } catch (error) {
+            return res.status(400).json({
+                success: false,
+                message: error.message
+            });
+        }
+    }
+
+
+    async changePassword(req, res) {
+        try {
+            const sellerId = req.user.sellerId;
+            const passwordData = req.body;
+
+            const result = await sellerService.changePassword(
+                sellerId,
+                passwordData
+            );
+
+            return res.status(200).json(result);
+
+        } catch (error) {
+            return res.status(400).json({
+                success: false,
+                message: error.message
+            });
+        }
+    }
+
   //add this logout
   async logout(req, res) {
     cookieHelper.clearAuthCookie(res);

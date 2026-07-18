@@ -249,6 +249,109 @@ class SellerService{
         }
     }
 
+    async updateSellerProfile(sellerId,sellerData){
+        const connection = await db.getConnection();
+
+        try{
+            await connection.beginTransaction();
+
+            const existingSeller = await sellerRepository.getSellerById(connection,sellerId);
+
+            if(!existingSeller){
+                throw new Error("Seller does not exist.");
+            }
+
+            const existingSellerWithSameData = await sellerRepository.checkSellerExists(connection,sellerData.mobile,sellerData.gstin,sellerId);
+
+            if(existingSellerWithSameData){
+                throw new Error("Mobile number or GSTIN already exists.");
+            }
+
+            const result = await sellerRepository.updateSellerProfile(connection,sellerId,sellerData);
+
+            if (result.affectedRows === 0) {
+                throw new Error("Failed to update profile.");
+            }
+
+            await connection.commit();
+
+            return{
+                success: true,
+                message: "Profile updated successfully."
+            };
+
+        }catch(error){
+            await connection.rollback();
+            throw error;
+        }
+        finally{
+            connection.release();
+        }  
+    }
+
+    async changePassword(sellerId, passwordData) {
+    const connection = await db.getConnection();
+
+        try {
+            await connection.beginTransaction();
+
+            const seller = await sellerRepository.getSellerPassword(
+                connection,
+                sellerId
+            );
+
+            if (!seller) {
+                throw new Error("Seller does not exist.");
+            }
+
+            const isPasswordValid = await bcrypt.compare(
+                passwordData.oldPassword,
+                seller.passwordd
+            );
+
+            if (!isPasswordValid) {
+                throw new Error("Current password is incorrect.");
+            }
+
+            const isSamePassword = await bcrypt.compare(
+                passwordData.newPassword,
+                seller.passwordd
+            );
+
+            if (isSamePassword) {
+                throw new Error("New password cannot be the same as the current password.");
+            }
+
+            const hashedPassword = await bcrypt.hash(
+                passwordData.newPassword,
+                10
+            );
+
+            const result = await sellerRepository.updatePassword(
+                connection,
+                sellerId,
+                hashedPassword
+            );
+
+            if (result.affectedRows === 0) {
+                throw new Error("Failed to change password.");
+            }
+
+            await connection.commit();
+
+            return {
+                success: true,
+                message: "Password changed successfully."
+            };
+
+        } catch (error) {
+            await connection.rollback();
+            throw error;
+        } finally {
+            connection.release();
+        }
+    }
+
 }
 
 module.exports = new SellerService();

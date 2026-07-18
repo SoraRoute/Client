@@ -2,7 +2,7 @@ class SellerRepository{
 
     async saveOtp(connection,email,otpHash,purpose,expires_at){
         await connection.query(`
-            Insert Into verification_codes(
+            Insert Into verification_codes("
                 email,
                 otp_hash,
                 purpose,
@@ -144,6 +144,71 @@ class SellerRepository{
             [hashedPassword,email]
         );
     }
+
+    async updateSellerProfile(connection,sellerId,sellerData){
+        const query = `
+        UPDATE sellers
+        SET
+            seller_name = ?,
+            mobile = ?,
+            gstin = ?
+        WHERE id = ?;
+    `;
+
+    const [result] = await connection.execute(query, [
+        sellerData.sellerName,
+        sellerData.mobile,
+        sellerData.gstin,
+        sellerId
+    ]);
+
+    return result;
+
+    }
+
+    async checkSellerExists(connection, mobile, gstin, sellerId) {
+        const query = `
+            SELECT id
+            FROM sellers
+            WHERE (mobile = ? OR gstin = ?)
+            AND id != ?;
+        `;
+
+        const [rows] = await connection.execute(query, [
+            mobile,
+            gstin,
+            sellerId
+        ]);
+
+        return rows[0];
+    }
+
+    async updatePassword(connection, sellerId, hashedPassword) {
+        const query = `
+            UPDATE sellers
+            SET passwordd = ?
+            WHERE id = ?;
+        `;
+
+        const [result] = await connection.execute(query, [
+            hashedPassword,
+            sellerId
+        ]);
+
+        return result;
+    }
+
+    async getSellerPassword(connection, sellerId) {
+    const query = `
+        SELECT passwordd
+        FROM sellers
+        WHERE id = ?;
+    `;
+
+    const [rows] = await connection.execute(query, [sellerId]);
+
+    return rows[0];
+}
 
 }
 

@@ -7,6 +7,10 @@ const authMiddleware = require("../middleware/authMiddleware")
 
 const roleMiddleware = require("../middleware/roleMiddleware")
 
+const validateSellerProfile = require("../middleware/validationSellerProfile")
+
+const validateChangePassword = require("../middleware/validationChangePassword")
+
 router.post(
     "/send-otp",
     sellerController.sendSellerOtp
@@ -43,6 +47,23 @@ router.post(
     "/reset-password",
     sellerController.resetPassword
 );
+
+router.patch(
+    "/update-profile",
+    authMiddleware,
+    roleMiddleware("seller"),
+    validateSellerProfile,
+    sellerController.updateSellerProfile
+);
+
+router.patch(
+    "/change-password",
+    authMiddleware,
+    roleMiddleware("seller"),
+    validateChangePassword,
+    sellerController.changePassword
+);
+
 //add this logout route
 router.post("/logout", authMiddleware, sellerController.logout);
 
