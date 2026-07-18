@@ -6,6 +6,8 @@ const cookieParser = require("cookie-parser");
 app.use(cookieParser());
 const sellerRoutes = require("./Routes/sellerRoutes");
 
+const sellerDashboardRoutes = require("./Routes/sellerDashboardRoutes");
+
 const productRoutes = require("./Routes/productRoutes");
 
 const customerRoutes = require("./Routes/customerRoutes");
@@ -26,7 +28,10 @@ const aiRoutes = require("./Routes/aiRoutes");
 
 const adminRoutes = require("./Routes/adminRoutes");
 
+
 app.use("/api/seller", sellerRoutes);
+app.use("/api/seller/dashboard",sellerDashboardRoutes);
+
 app.use("/api/products", productRoutes);
 app.use("/api/my-products", productRoutes);
 
