@@ -166,7 +166,7 @@ class SellerRepository{
 
     }
 
-    async checkSellerExists(connection, mobile, gstin, sellerId) {
+    async checkSellerExists(connection, mobile, gstin, sellerId){
         const query = `
             SELECT id
             FROM sellers
@@ -183,7 +183,7 @@ class SellerRepository{
         return rows[0];
     }
 
-    async updatePassword(connection, sellerId, hashedPassword) {
+    async updatePassword(connection, sellerId, hashedPassword){
         const query = `
             UPDATE sellers
             SET passwordd = ?
@@ -198,17 +198,100 @@ class SellerRepository{
         return result;
     }
 
-    async getSellerPassword(connection, sellerId) {
-    const query = `
-        SELECT passwordd
-        FROM sellers
-        WHERE id = ?;
-    `;
+    async getSellerPassword(connection, sellerId){
+        const query = `
+            SELECT passwordd
+            FROM sellers
+            WHERE id = ?;
+        `;
 
-    const [rows] = await connection.execute(query, [sellerId]);
+        const [rows] = await connection.execute(query, [sellerId]);
 
-    return rows[0];
-}
+        return rows[0];
+
+    }
+
+    async getSellerOrders(connection, sellerId){
+        const query = `
+            SELECT
+                oi.id AS order_item_id,
+                o.id AS order_id,
+                p.id AS product_id,
+                p.title,
+                oi.quantity,
+                oi.price,
+                (oi.quantity * oi.price) AS total_price,
+                o.order_status,
+                o.created_at
+            FROM order_items oi
+            INNER JOIN orders o
+                ON oi.order_id = o.id
+            INNER JOIN products p
+                ON oi.product_id = p.id
+            WHERE p.seller_id = ?
+            ORDER BY o.created_at DESC;
+        `;
+
+        const [rows] = await connection.query(query, [sellerId]);
+
+        return rows;
+    }
+
+    async getSellerRevenue(connection, sellerId){
+        const query = `
+            SELECT
+                COALESCE(SUM(oi.quantity * oi.price), 0) AS totalRevenue
+            FROM order_items oi
+            INNER JOIN orders o
+                ON oi.order_id = o.id
+            INNER JOIN products p
+                ON oi.product_id = p.id
+            WHERE p.seller_id = ?
+            AND o.order_status = 'DELIVERED';
+        `;
+
+        const [rows] = await connection.query(query, [sellerId]);
+
+        return rows[0];
+    }
+
+    async getOrderById(connection, orderId, sellerId){
+        const query = `
+            SELECT
+                o.id,
+                o.order_status
+            FROM orders o
+            INNER JOIN order_items oi
+                ON o.id = oi.order_id
+            INNER JOIN products p
+                ON oi.product_id = p.id
+            WHERE o.id = ?
+            AND p.seller_id = ?;
+        `;
+
+        const [rows] = await connection.query(query, [
+            orderId,
+            sellerId
+        ]);
+
+        return rows[0];
+    }
+
+    async updateOrderStatus(connection, orderId, orderStatus){
+        const query = `
+            UPDATE orders
+            SET order_status = ?
+            WHERE id = ?;
+        `;
+
+        const [result] = await connection.query(query, [
+            orderStatus,
+            orderId
+        ]);
+
+        return result;
+    }
+
 
 }
 

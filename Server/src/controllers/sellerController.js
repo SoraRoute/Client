@@ -200,6 +200,61 @@ class SellerController {
       message: "Logged out successfully.",
     });
   }
+
+  async getSellerOrders(req, res) {
+    try {
+        const sellerId = req.user.sellerId;
+
+        const result = await sellerService.getSellerOrders(sellerId);
+
+        return res.status(200).json(result);
+
+    } catch (error) {
+        return res.status(400).json({
+            success: false,
+            message: error.message
+        });
+    }
+}
+
+async getSellerRevenue(req, res) {
+    try {
+        const sellerId = req.user.sellerId;
+
+        const result = await sellerService.getSellerRevenue(sellerId);
+
+        return res.status(200).json(result);
+
+    } catch (error) {
+        return res.status(400).json({
+            success: false,
+            message: error.message
+        });
+    }
+}
+
+async updateOrderStatus(req, res) {
+    try {
+        const sellerId = req.user.sellerId;
+        const { orderId } = req.params;
+        const { order_status } = req.body;
+
+        const result = await sellerService.updateOrderStatus(
+            orderId,
+            sellerId,
+            order_status
+        );
+
+        return res.status(200).json(result);
+
+    } catch (error) {
+        return res.status(400).json({
+            success: false,
+            message: error.message
+        });
+    }
+  }
+
 }
 
 module.exports = new SellerController();

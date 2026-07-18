@@ -64,6 +64,31 @@ router.patch(
     sellerController.changePassword
 );
 
+
+// Seller Orders
+router.get(
+    "/orders",
+    authMiddleware,
+    roleMiddleware("seller"),
+    sellerController.getSellerOrders
+);
+
+// Seller Revenue
+router.get(
+    "/revenue",
+    authMiddleware,
+    roleMiddleware("seller"),
+    sellerController.getSellerRevenue
+);
+
+// Update Order Status
+router.patch(
+    "/orders/:orderId/status",
+    authMiddleware,
+    roleMiddleware("seller"),
+    sellerController.updateOrderStatus
+);
+
 //add this logout route
 router.post("/logout", authMiddleware, sellerController.logout);
 
