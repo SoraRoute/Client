@@ -27,7 +27,7 @@ const customerHomeRoutes = require("./Routes/customerHomeRoutes");
 const aiRoutes = require("./Routes/aiRoutes");
 
 const adminRoutes = require("./Routes/adminRoutes");
-
+const adminSellerRoutes= require("./Routes/adminSellerRoutes");
 
 app.use("/api/seller", sellerRoutes);
 app.use("/api/seller/dashboard",sellerDashboardRoutes);
@@ -51,5 +51,6 @@ app.use("/uploads", express.static("uploads"));
 app.use("/api/categories", categoryRoutes);
 
 app.use("/api/admin", adminRoutes);
+app.use("/api/admin/sellers",adminSellerRoutes);
 
 module.exports = app;
