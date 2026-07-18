@@ -28,6 +28,9 @@ const aiRoutes = require("./Routes/aiRoutes");
 
 const adminRoutes = require("./Routes/adminRoutes");
 const adminSellerRoutes= require("./Routes/adminSellerRoutes");
+const adminProductRoutes = require("./Routes/adminProductRoutes");
+
+
 
 app.use("/api/seller", sellerRoutes);
 app.use("/api/seller/dashboard",sellerDashboardRoutes);
@@ -52,5 +55,6 @@ app.use("/api/categories", categoryRoutes);
 
 app.use("/api/admin", adminRoutes);
 app.use("/api/admin/sellers",adminSellerRoutes);
+app.use("/api/admin", adminProductRoutes);
 
 module.exports = app;

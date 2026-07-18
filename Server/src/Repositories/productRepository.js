@@ -59,7 +59,6 @@ class ProductRepository{
             description,
             brand,
             price,
-            discount_price,
             stock,
             status,
             created_at
@@ -140,15 +139,14 @@ class ProductRepository{
         await connection.query(query,[productId]);
     }
 
-    async updateStatus(connection,productId,sellerId){
+    async updateStatus(connection,productId,sellerId,status){
         const query = `Update products Set status = ? where id = ? and seller_id = ?`;
 
-        await connection.query(query,[productId,sellerId]);
+        await connection.query(query,[status,productId,sellerId]);
     }
     
     //added finding product method through product id only(Nishtha)
     async findProductById(productId) {
-
         const sql = `
             SELECT *
             FROM products

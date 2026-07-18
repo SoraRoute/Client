@@ -154,11 +154,20 @@ class ProductService{
         }
     }
 
-    async updateStatus(productId,sellerId){
+    async updateStatus(productId,sellerId,status){
         const connection = await db.getConnection();
 
         try{
             connection.beginTransaction();
+
+            const allowedStatus = [
+                "ACTIVE",
+                "INACTIVE"
+            ];
+
+            if (!allowedStatus.includes(status)) {
+                throw new Error("Invalid product status.");
+            }
 
             const product = productRepository.getProductById(productId,sellerId);
 
@@ -166,7 +175,7 @@ class ProductService{
                 throw new Error("Product Not Found");
             }
 
-            productRepository.updateStatus(productId,sellerId);
+            productRepository.updateStatus(productId,sellerId,status);
 
             await connection.commit();
 

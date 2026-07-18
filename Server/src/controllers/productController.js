@@ -114,7 +114,7 @@ class ProductController{
             const prodcutId = req.params.id;
             const {status} = req.body;
 
-            await productServices.updateStatus(prodcutId,sellerId);
+            await productServices.updateStatus(prodcutId,sellerId,status);
 
             return res.status(200).json({
                 success: true,
