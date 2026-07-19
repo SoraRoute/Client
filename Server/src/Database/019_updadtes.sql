@@ -1,2 +1,0 @@
-ALTER TABLE sellers
-ADD COLUMN is_verified BOOLEAN DEFAULT FALSE;
