@@ -34,3 +34,40 @@
     @apply bg-paper-line rounded-full;
   }
 }
+body {
+    margin: 0;
+}
+
+@layer base {
+
+    h1,
+    h2,
+    h3,
+    h4 {
+        @apply font-display text-ink;
+    }
+
+    ::selection {
+        @apply bg-gold-300/60 text-ink;
+    }
+
+    :focus-visible {
+        outline: 2px solid #d89a1f;
+        outline-offset: 2px;
+    }
+}
+
+@layer utilities {
+    .hex-texture {
+        background-image: var(--tw-bg-hex, none);
+    }
+
+    .scrollbar-thin::-webkit-scrollbar {
+        height: 6px;
+        width: 6px;
+    }
+
+    .scrollbar-thin::-webkit-scrollbar-thumb {
+        @apply bg-paper-line rounded-full;
+    }
+}

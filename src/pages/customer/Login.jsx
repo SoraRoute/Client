@@ -1,73 +1,102 @@
-import { useForm } from "react-hook-form";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
-import axiosInstance from "../../api/axiosInstance";
-import { CUSTOMER } from "../../api/endpoints";
-import { useCustomerAuth } from "../../context/CustomerAuthContext";
-import useDocumentTitle from "../../hooks/useDocumentTitle";
-import Input from "../../components/common/Input";
-import Button from "../../components/common/Button";
+import { useState } from "react";
+import { login } from "../../services/authService";
 
-export default function Login() {
-  useDocumentTitle("Sign in");
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { refresh } = useCustomerAuth();
+function Login() {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm();
+    const handleLogin = async (e) => {
+        e.preventDefault();
 
-  async function onSubmit(values) {
-    try {
-      await axiosInstance.post(CUSTOMER.LOGIN, values);
-      await refresh();
-      toast.success("Welcome back!");
-      const redirectTo = location.state?.from?.pathname || "/";
-      navigate(redirectTo, { replace: true });
-    } catch (err) {
-      toast.error(err.friendlyMessage || "Login failed.");
-    }
-  }
+        try {
+            const response = await login({
+                email,
+                password,
+            });
 
-  return (
-    <div className="mx-auto max-w-sm py-10">
-      <h1 className="text-center font-display text-2xl font-semibold text-ink">Sign in</h1>
-      <p className="mt-1 text-center text-sm text-ink-muted">Welcome back to MarketHive</p>
+            console.log(response.data);
+            alert("Login Successful");
+        } catch (error) {
+            console.log(error);
 
-      <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-4">
-        <Input
-          label="Email"
-          type="email"
-          error={errors.email?.message}
-          {...register("email", { required: "Email is required" })}
-        />
-        <Input
-          label="Password"
-          type="password"
-          error={errors.password?.message}
-          {...register("password", { required: "Password is required" })}
-        />
+            if (error.response) {
+                console.log("Status:", error.response.status);
+                console.log("Data:", error.response.data);
+                alert(error.response.data.message);
+            } else {
+                console.log(error.message);
+                alert(error.message);
+            }
+        }
+    };
 
-        <div className="flex justify-end">
-          <Link to="/forgot-password" className="text-sm font-medium text-teal-600 hover:text-teal-700">
-            Forgot password?
-          </Link>
+    return (
+        <div className="min-h-screen flex items-center justify-center bg-gray-100">
+
+            <form
+                onSubmit={handleLogin}
+                className="bg-white w-full max-w-md rounded-xl shadow-lg p-8"
+            >
+
+                <h1 className="text-3xl font-bold text-center mb-8">
+                    Welcome Back
+                </h1>
+
+                <div className="mb-5">
+                    <label className="block mb-2 font-medium">
+                        Email
+                    </label>
+
+                    <input
+                        type="email"
+                        placeholder="Enter email"
+                        className="w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                    />
+                </div>
+
+                <div className="mb-3">
+                    <label className="block mb-2 font-medium">
+                        Password
+                    </label>
+
+                    <input
+                        type="password"
+                        placeholder="Enter password"
+                        className="w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
+                </div>
+
+                <div className="text-right mb-6">
+                    <button
+                        type="button"
+                        className="text-purple-600 hover:underline"
+                    >
+                        Forgot Password?
+                    </button>
+                </div>
+
+                <button
+                    type="submit"
+                    className="w-full bg-purple-600 text-white py-3 rounded-lg hover:bg-purple-700 transition"
+                >
+                    Login
+                </button>
+
+                <p className="text-center mt-6">
+                    Don't have an account?{" "}
+                    <span className="text-purple-600 cursor-pointer hover:underline">
+                        Register
+                    </span>
+                </p>
+
+            </form>
+
         </div>
-
-        <Button type="submit" fullWidth isLoading={isSubmitting}>
-          Sign in
-        </Button>
-      </form>
-
-      <p className="mt-6 text-center text-sm text-ink-muted">
-        New to MarketHive?{" "}
-        <Link to="/register" className="font-medium text-teal-600 hover:text-teal-700">
-          Create an account
-        </Link>
-      </p>
-    </div>
-  );
+    );
 }
+
+export default Login;
