@@ -73,11 +73,18 @@ export default function ChatWidget() {
       // The endpoint is stateless — it only ever sees this one message, not
       // the transcript — so no conversation history is sent here.
       const res = await axiosInstance.post(AI.CHAT, { message: trimmed });
-      setMessages((prev) => [...prev, { role: "assistant", content: res.data.reply }]);
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: res.data.reply },
+      ]);
     } catch (err) {
       setMessages((prev) => [
         ...prev,
-        { role: "error", content: err.friendlyMessage || "Something went wrong. Please try again." },
+        {
+          role: "error",
+          content:
+            err.friendlyMessage || "Something went wrong. Please try again.",
+        },
       ]);
     } finally {
       setIsSending(false);
@@ -96,7 +103,9 @@ export default function ChatWidget() {
           <div className="flex items-center justify-between border-b border-paper-line bg-ink px-4 py-3">
             <div className="flex items-center gap-2 text-paper">
               <Sparkles size={16} className="text-gold-500" />
-              <span className="font-display text-sm font-semibold">MarketHive Assistant</span>
+              <span className="font-display text-sm font-semibold">
+                MarketHive Assistant
+              </span>
             </div>
             <button
               type="button"
@@ -108,14 +117,20 @@ export default function ChatWidget() {
             </button>
           </div>
 
-          <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto px-4 py-4">
+          <div
+            ref={scrollRef}
+            className="flex-1 space-y-3 overflow-y-auto px-4 py-4"
+          >
             {messages.map((message, index) => (
               <MessageBubble key={index} message={message} />
             ))}
             {isSending ? <TypingBubble /> : null}
           </div>
 
-          <form onSubmit={handleSubmit} className="flex items-center gap-2 border-t border-paper-line p-3">
+          <form
+            onSubmit={handleSubmit}
+            className="flex items-center gap-2 border-t border-paper-line p-3"
+          >
             <input
               ref={inputRef}
               value={input}
@@ -139,8 +154,10 @@ export default function ChatWidget() {
       <button
         type="button"
         onClick={() => setIsOpen((v) => !v)}
-        className="flex h-14 w-14 items-center justify-center rounded-full bg-ink text-paper shadow-pop hover:bg-ink-soft"
-        aria-label={isOpen ? "Close shopping assistant" : "Open shopping assistant"}
+        className="flex h-14 w-14 items-center justify-center rounded-full bg-gold-500 text-black shadow-pop transition-all duration-200 hover:scale-105 hover:bg-gold-600"
+        aria-label={
+          isOpen ? "Close shopping assistant" : "Open shopping assistant"
+        }
       >
         {isOpen ? <X size={22} /> : <MessageCircle size={22} />}
       </button>
