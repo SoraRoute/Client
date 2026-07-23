@@ -13,61 +13,58 @@ import { createContext, useCallback, useContext, useMemo, useState } from "react
  * @param {(profileResponseData: any) => any} mapUser - extracts the user
  *   object from that endpoint's response shape.
  */
-
 export function createAuthContext({ fetchProfile, mapUser }) {
-    const AuthContext = createContext(undefined);
+  const AuthContext = createContext(undefined);
 
-    function AuthProvider({ children }) {
+  function AuthProvider({ children }) {
+    const [user, setUser] = useState(null);
+    // isLoading/hasChecked start false on purpose: mounting every portal's
+    // provider at the root shouldn't fire three simultaneous profile
+    // requests. Each portal's ProtectedRoute/GuestRoute calls refresh() the
+    // first time that portal is actually visited (see routes/ProtectedRoute.jsx).
+    const [isLoading, setIsLoading] = useState(false);
+    const [hasChecked, setHasChecked] = useState(false);
 
-        const [user, setUser] = useState(null);
-        // isLoading/hasChecked start false on purpose: mounting every portal's
-        // provider at the root shouldn't fire three simultaneous profile
-        // requests. Each portal's ProtectedRoute/GuestRoute calls refresh() the
-        // first time that portal is actually visited (see routes/ProtectedRoute.jsx).
-        
-        const [isLoading, setIsLoading] = useState(false);
-        const [hasChecked, setHasChecked] = useState(false);
+    const refresh = useCallback(async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetchProfile();
+        setUser(mapUser(response.data));
+      } catch (error) {
+        setUser(null);
+      } finally {
+        setIsLoading(false);
+        setHasChecked(true);
+      }
+    }, []);
 
-        const refresh = useCallback(async () => {
-            setIsLoading(true);
-            try {
-                const response = await fetchProfile();
-                setUser(mapUser(response.data));
-            } catch (error) {
-                setUser(null);
-            } finally {
-                setIsLoading(false);
-                setHasChecked(true);
-            }
-        }, []);
+    const clear = useCallback(() => {
+      setUser(null);
+    }, []);
 
-        const clear = useCallback(() => {
-            setUser(null);
-        }, []);
+    const value = useMemo(
+      () => ({
+        user,
+        setUser,
+        isAuthenticated: Boolean(user),
+        isLoading,
+        hasChecked,
+        refresh,
+        clear,
+      }),
+      [user, isLoading, hasChecked, refresh, clear],
+    );
 
-        const value = useMemo(
-            () => ({
-                user,
-                setUser,
-                isAuthenticated: Boolean(user),
-                isLoading,
-                hasChecked,
-                refresh,
-                clear,
-            }),
-            [user, isLoading, hasChecked, refresh, clear],
-        );
+    return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  }
 
-        return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  function useAuthContext() {
+    const ctx = useContext(AuthContext);
+    if (ctx === undefined) {
+      throw new Error("useAuthContext must be used within its matching AuthProvider");
     }
+    return ctx;
+  }
 
-    function useAuthContext() {
-        const ctx = useContext(AuthContext);
-        if (ctx === undefined) {
-            throw new Error("useAuthContext must be used within its matching AuthProvider");
-        }
-        return ctx;
-    }
-
-    return { AuthProvider, useAuthContext };
+  return { AuthProvider, useAuthContext };
 }
