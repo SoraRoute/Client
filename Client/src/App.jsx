@@ -1,7 +1,17 @@
-import AppRoutes from "./routes/AppRoutes";
+import AppProviders from "./context/AppProviders";
 
-function App() {
-  return <AppRoutes />;
+function AppContent() {
+  return (
+    <>
+      <h1>markethive</h1>
+    </>
+  );
 }
 
-export default App;
+export default function App() {
+  return (
+    <AppProviders>
+      <AppContent />
+    </AppProviders>
+  );
+}
