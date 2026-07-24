@@ -6,14 +6,15 @@ import { createAuthContext } from "./createAuthContext";
 // object at the top level (not nested under `data`). Shape depends on
 // customerService.getCustomerProfile — treat the whole payload as the user
 // record, minus the success/message envelope keys.
+
 function mapCustomerUser(payload) {
-  if (!payload) return null;
-  const { success, message, ...user } = payload;
-  return user;
+    if (!payload) return null;
+    const { success, message, ...user } = payload;
+    return user;
 }
 
 export const { AuthProvider: CustomerAuthProvider, useAuthContext: useCustomerAuth } =
-  createAuthContext({
-    fetchProfile: () => axiosInstance.get(CUSTOMER.PROFILE),
-    mapUser: mapCustomerUser,
-  });
+    createAuthContext({
+        fetchProfile: () => axiosInstance.get(CUSTOMER.PROFILE),
+        mapUser: mapCustomerUser,
+    });

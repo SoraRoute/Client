@@ -1,28 +1,27 @@
-// Base URL for the MarketHive backend. Configure in .env as VITE_API_BASE_URL.
+// Backend API URL.
 export const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+    import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 
-// Where product images uploaded via multer/cloudinary resolve to when the
-// backend ever returns a relative /uploads path instead of a full Cloudinary URL.
+// Base path for locally stored uploaded images.
 export const UPLOADS_BASE_URL = `${API_BASE_URL}/uploads`;
 
-// Order status values exactly as defined in the `orders.order_status` ENUM.
+// Available order statuses.
 export const ORDER_STATUSES = [
-  "PLACED",
-  "CONFIRMED",
-  "SHIPPED",
-  "DELIVERED",
-  "CANCELLED",
+    "PLACED",
+    "CONFIRMED",
+    "SHIPPED",
+    "DELIVERED",
+    "CANCELLED",
 ];
 
-// Product status values exactly as defined in the `products.status` ENUM.
+// Available product statuses.
 export const PRODUCT_STATUSES = ["ACTIVE", "INACTIVE"];
 
-// Category status values exactly as defined in the `categories.status` ENUM.
+// Available category statuses.
 export const CATEGORY_STATUSES = ["ACTIVE", "INACTIVE"];
 
-// Seller account status values exactly as defined in `sellers.account_status`.
+// Available seller account statuses.
 export const SELLER_ACCOUNT_STATUSES = ["PENDING", "ACTIVE", "SUSPENDED"];
 
-// Payment methods exactly as defined in `payments.payment_method`.
+// Supported payment methods.
 export const PAYMENT_METHODS = ["COD", "UPI", "CARD", "NETBANKING"];
