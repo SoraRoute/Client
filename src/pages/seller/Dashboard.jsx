@@ -11,70 +11,70 @@ import StatCard from "../../components/common/StatCard";
 import StatusBadge from "../../components/common/StatusBadge";
 
 export default function Dashboard() {
-	useDocumentTitle("Dashboard");
+    useDocumentTitle("Dashboard");
 
-	const [summary, setSummary] = useState(null);
-	const [productStats, setProductStats] = useState(null);
-	const [recentProducts, setRecentProducts] = useState([]);
-	const [categoryBreakdown, setCategoryBreakdown] = useState([]);
-	const [isLoading, setIsLoading] = useState(true);
-	const [error, setError] = useState("");
+    const [summary, setSummary] = useState(null);
+    const [productStats, setProductStats] = useState(null);
+    const [recentProducts, setRecentProducts] = useState([]);
+    const [categoryBreakdown, setCategoryBreakdown] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState("");
 
-	async function load() {
-		setIsLoading(true);
-		setError("");
-		try {
-			const [summaryRes, statsRes, recentRes, categoryRes] = await Promise.all([
-				axiosInstance.get(SELLER_DASHBOARD.SUMMARY),
-				axiosInstance.get(SELLER_DASHBOARD.PRODUCT_STATISTICS),
-				axiosInstance.get(SELLER_DASHBOARD.RECENT_PRODUCTS),
-				axiosInstance.get(SELLER_DASHBOARD.CATEGORY_WISE_COUNT),
-			]);
+    async function load() {
+        setIsLoading(true);
+        setError("");
+        try {
+            const [summaryRes, statsRes, recentRes, categoryRes] = await Promise.all([
+                axiosInstance.get(SELLER_DASHBOARD.SUMMARY),
+                axiosInstance.get(SELLER_DASHBOARD.PRODUCT_STATISTICS),
+                axiosInstance.get(SELLER_DASHBOARD.RECENT_PRODUCTS),
+                axiosInstance.get(SELLER_DASHBOARD.CATEGORY_WISE_COUNT),
+            ]);
 
-			setSummary(summaryRes.data.data);
-			setProductStats(statsRes.data.data);
-			setRecentProducts(recentRes.data.data || []);
-			setCategoryBreakdown(categoryRes.data.data || []);
+            setSummary(summaryRes.data.data);
+            setProductStats(statsRes.data.data);
+            setRecentProducts(recentRes.data.data || []);
+            setCategoryBreakdown(categoryRes.data.data || []);
 
-		} catch (err) {
-			setError(err.friendlyMessage || "Failed to load your dashboard.");
+        } catch (err) {
+            setError(err.friendlyMessage || "Failed to load your dashboard.");
 
-		} finally {
-			setIsLoading(false);
-		}
-	}
+        } finally {
+            setIsLoading(false);
+        }
+    }
 
-	useEffect(() => {
-		load();
-	}, []);
+    useEffect(() => {
+        load();
+    }, []);
 
-	if (isLoading) return <Loader fullScreen label="Loading your dashboard…" />;
-	if (error) return <ErrorMessage message={error} onRetry={load} />;
+    if (isLoading) return <Loader fullScreen label="Loading your dashboard…" />;
+    if (error) return <ErrorMessage message={error} onRetry={load} />;
 
-	return (
-		<div className="space-y-8">
-            
-			
-			<h1 className="font-display text-2xl font-semibold text-ink">Dashboard</h1>
+    return (
+        <div className="space-y-8">
 
-			<div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-				<StatCard icon={Package} label="Total products" value={summary?.totalProducts ?? 0} accent="teal" />
-				<StatCard icon={PackageCheck} label="Active" value={summary?.activeProducts ?? 0} accent="teal" />
-				<StatCard icon={PackageX} label="Inactive" value={summary?.inactiveProducts ?? 0} />
-				<StatCard icon={LayoutGrid} label="Categories" value={summary?.totalCategories ?? 0} accent="teal" />
-				<StatCard icon={Boxes} label="Total stock" value={summary?.totalStock ?? 0} />
-			</div>
 
-			{productStats ? (
-				<section>
-					<h2 className="mb-3 font-display text-lg font-semibold text-ink">Pricing overview</h2>
-					<div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-						<StatCard label="Average price" value={formatPrice(productStats.averagePrice)} />
-						<StatCard label="Highest price" value={formatPrice(productStats.highestPrice)} />
-						<StatCard label="Lowest price" value={formatPrice(productStats.lowestPrice)} />
-					</div>
-				</section>
-			) : null}
+            <h1 className="font-display text-2xl font-semibold text-ink">Dashboard</h1>
+
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+                <StatCard icon={Package} label="Total products" value={summary?.totalProducts ?? 0} accent="teal" />
+                <StatCard icon={PackageCheck} label="Active" value={summary?.activeProducts ?? 0} accent="teal" />
+                <StatCard icon={PackageX} label="Inactive" value={summary?.inactiveProducts ?? 0} />
+                <StatCard icon={LayoutGrid} label="Categories" value={summary?.totalCategories ?? 0} accent="teal" />
+                <StatCard icon={Boxes} label="Total stock" value={summary?.totalStock ?? 0} />
+            </div>
+
+            {productStats ? (
+                <section>
+                    <h2 className="mb-3 font-display text-lg font-semibold text-ink">Pricing overview</h2>
+                    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+                        <StatCard label="Average price" value={formatPrice(productStats.averagePrice)} />
+                        <StatCard label="Highest price" value={formatPrice(productStats.highestPrice)} />
+                        <StatCard label="Lowest price" value={formatPrice(productStats.lowestPrice)} />
+                    </div>
+                </section>
+            ) : null}
 
             <div className="space-y-8">
                 <section>
@@ -146,6 +146,6 @@ export default function Dashboard() {
                     )}
                 </section>
             </div>
-		</div>
-	);
+        </div>
+    );
 }

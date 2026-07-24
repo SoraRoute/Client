@@ -8,38 +8,38 @@ import Loader from "../../components/common/Loader";
 import ErrorMessage from "../../components/common/ErrorMessage";
 
 export default function Revenue() {
-	useDocumentTitle("Revenue");
+    useDocumentTitle("Revenue");
 
-	const [revenue, setRevenue] = useState(null);
-	const [isLoading, setIsLoading] = useState(true);
-	const [error, setError] = useState("");
+    const [revenue, setRevenue] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState("");
 
-	async function load() {
-		setIsLoading(true);
-		setError("");
-		try {
-			const res = await axiosInstance.get(SELLER.REVENUE);
-			setRevenue(res.data.data);
-		} catch (err) {
-			setError(err.friendlyMessage || "Failed to load revenue.");
-		} finally {
-			setIsLoading(false);
-		}
-	}
+    async function load() {
+        setIsLoading(true);
+        setError("");
+        try {
+            const res = await axiosInstance.get(SELLER.REVENUE);
+            setRevenue(res.data.data);
+        } catch (err) {
+            setError(err.friendlyMessage || "Failed to load revenue.");
+        } finally {
+            setIsLoading(false);
+        }
+    }
 
-	useEffect(() => {
-		load();
-	}, []);
+    useEffect(() => {
+        load();
+    }, []);
 
-	if (isLoading) return <Loader fullScreen label="Loading revenue…" />;
-	if (error) return <ErrorMessage message={error} onRetry={load} />;
+    if (isLoading) return <Loader fullScreen label="Loading revenue…" />;
+    if (error) return <ErrorMessage message={error} onRetry={load} />;
 
-	return (
+    return (
         <div className="space-y-6">
             <h1 className="font-display text-2xl font-semibold text-ink">
                 Revenue
             </h1>
-    
+
             <div className="grid gap-6 md:grid-cols-2">
                 {/* Main Revenue Card */}
                 <div
@@ -69,16 +69,16 @@ export default function Revenue() {
                             <Wallet size={26} strokeWidth={1.8} />
                         </div>
                     </div>
-    
+
                     <div className="mt-6 border-t border-paper-line pt-4">
                         <p className="text-sm text-ink-muted">
                             Earnings from delivered orders
                         </p>
                     </div>
-                    
+
                 </div>
-    
-    
+
+
                 {/* Information Card */}
                 <div
                     className="
@@ -94,33 +94,33 @@ export default function Revenue() {
                     <h2 className="font-display text-lg font-semibold text-ink">
                         Revenue Insights
                     </h2>
-    
+
                     <div className="mt-5 space-y-4">
                         <div className="flex justify-between">
                             <span className="text-sm text-ink-muted">
                                 Status
                             </span>
-    
+
                             <span className="rounded-full bg-teal-50 px-3 py-1 text-xs font-medium text-teal-600">
                                 Active
                             </span>
                         </div>
-    
+
                         <div className="flex justify-between">
                             <span className="text-sm text-ink-muted">
                                 Payment
                             </span>
-    
+
                             <span className="text-sm font-medium text-ink">
                                 Completed
                             </span>
                         </div>
-    
+
                         <div className="flex justify-between">
                             <span className="text-sm text-ink-muted">
                                 Source
                             </span>
-    
+
                             <span className="text-sm font-medium text-ink">
                                 Delivered Orders
                             </span>

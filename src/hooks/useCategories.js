@@ -7,8 +7,8 @@ export default function useCategories() {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState("");
 
-    async function load(){
-        
+    async function load() {
+
         setIsLoading(true);
         setError("");
         try {

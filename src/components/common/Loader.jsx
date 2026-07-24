@@ -1,6 +1,8 @@
-// Hexagon-shaped loading spinner used throughout the application.
+// A hexagon-notch spinner — a small nod to the "hive" mark instead of a
+// generic circular spinner.
+
 export default function Loader({ fullScreen = false, label = "Loading…", size = 28 }) {
-    // Reusable spinner content.
+
     const spinner = (
         <div className="flex flex-col items-center gap-3">
             <svg
@@ -17,7 +19,6 @@ export default function Loader({ fullScreen = false, label = "Loading…", size 
                     strokeWidth="3"
                 />
 
-                {/* Highlighted edge to create the spinning effect */}
                 <polygon
                     points="16,2 29,9 29,23"
                     fill="none"
@@ -25,18 +26,21 @@ export default function Loader({ fullScreen = false, label = "Loading…", size 
                     strokeWidth="3"
                     strokeLinecap="round"
                 />
+
             </svg>
 
             {label ? <p className="text-sm text-ink-muted font-body">{label}</p> : null}
+
         </div>
     );
 
-    // Render only the spinner when a full-screen loader isn't needed.
     if (!fullScreen) return spinner;
 
     return (
+
         <div className="min-h-[40vh] w-full flex items-center justify-center py-16">
             {spinner}
         </div>
+        
     );
 }

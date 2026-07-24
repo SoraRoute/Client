@@ -1,4 +1,3 @@
-// Color styles for different status values.
 const STATUS_STYLES = {
     PLACED: "bg-gold-50 text-gold-700",
     CONFIRMED: "bg-teal-50 text-teal-700",
@@ -14,9 +13,9 @@ const STATUS_STYLES = {
 };
 
 export default function StatusBadge({ status }) {
-    // Use a default style if the status isn't defined.
-    const style = STATUS_STYLES[status] || "bg-ink/5 text-ink-soft";
 
+    const style = STATUS_STYLES[status] || "bg-ink/5 text-ink-soft";
+    
     return (
         <span
             className={[

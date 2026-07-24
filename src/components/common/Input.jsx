@@ -6,19 +6,19 @@ const Input = forwardRef(function Input(
     ref,
 ) {
     const [showPassword, setShowPassword] = useState(false);
-
-    // Handle password visibility.
     const isPassword = type === "password";
     const resolvedType = isPassword ? (showPassword ? "text" : "password") : type;
 
     return (
+
         <label className="block">
-            {/* Input label */}
+
             {label ? (
                 <span className="mb-1.5 block text-sm font-medium text-ink-soft">{label}</span>
             ) : null}
 
             <span className="relative block">
+
                 <input
                     ref={ref}
                     type={resolvedType}
@@ -33,7 +33,6 @@ const Input = forwardRef(function Input(
                     {...rest}
                 />
 
-                {/* Toggle password visibility */}
                 {isPassword ? (
                     <button
                         type="button"
@@ -45,14 +44,15 @@ const Input = forwardRef(function Input(
                         {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                     </button>
                 ) : null}
+
             </span>
 
-            {/* Show error or hint */}
             {error ? (
                 <span className="mt-1 block text-xs text-danger-500">{error}</span>
             ) : hint ? (
                 <span className="mt-1 block text-xs text-ink-muted">{hint}</span>
             ) : null}
+            
         </label>
     );
 });

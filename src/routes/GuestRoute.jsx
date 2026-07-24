@@ -17,7 +17,7 @@ export default function GuestRoute({ useAuth, redirectTo }) {
             refresh();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        
+
     }, [hasChecked]);
 
     // Show a loader while the authentication check is in progress.

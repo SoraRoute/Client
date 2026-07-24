@@ -12,36 +12,36 @@ import Button from "../../components/common/Button";
 import Loader from "../../components/common/Loader";
 
 export default function Profile() {
-	useDocumentTitle("Your profile");
-	const { user, isLoading, refresh } = useSellerAuth();
+    useDocumentTitle("Your profile");
+    const { user, isLoading, refresh } = useSellerAuth();
 
-	const {
-		register,
-		handleSubmit,
-		reset,
-		formState: { errors, isSubmitting, isDirty },
-	} = useForm();
+    const {
+        register,
+        handleSubmit,
+        reset,
+        formState: { errors, isSubmitting, isDirty },
+    } = useForm();
 
-	useEffect(() => {
-		if (user) {
-			reset({ sellerName: user.seller_name || "", mobile: user.mobile || "", gstin: "" });
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [user?.id]);
+    useEffect(() => {
+        if (user) {
+            reset({ sellerName: user.seller_name || "", mobile: user.mobile || "", gstin: "" });
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [user?.id]);
 
-	async function onSubmit(values) {
-		try {
-			await axiosInstance.patch(SELLER.UPDATE_PROFILE, values);
-			toast.success("Profile updated");
-			refresh();
-		} catch (err) {
-			toast.error(err.friendlyMessage || "Failed to update profile.");
-		}
-	}
+    async function onSubmit(values) {
+        try {
+            await axiosInstance.patch(SELLER.UPDATE_PROFILE, values);
+            toast.success("Profile updated");
+            refresh();
+        } catch (err) {
+            toast.error(err.friendlyMessage || "Failed to update profile.");
+        }
+    }
 
-	if (isLoading || !user) return <Loader fullScreen label="Loading your profile…" />;
+    if (isLoading || !user) return <Loader fullScreen label="Loading your profile…" />;
 
-	return (
+    return (
         <div className="mx-auto w-full max-w-4xl">
             <div className="rounded-2xl bg-paper-raised p-6 shadow-card border border-paper-line space-y-8">
                 <div>
@@ -52,7 +52,7 @@ export default function Profile() {
                         Welcome to your profile. Manage your seller account information here.
                     </p>
                 </div>
-    
+
                 <div className="rounded-xl bg-paper p-4 space-y-3">
                     <div className="flex justify-between">
                         <span className="text-sm text-ink-muted">Email</span>
@@ -60,14 +60,14 @@ export default function Profile() {
                             {user.email}
                         </span>
                     </div>
-    
+
                     <div className="flex justify-between">
                         <span className="text-sm text-ink-muted">Account Type</span>
                         <span className="text-sm font-medium text-teal-600">
                             Seller
                         </span>
                     </div>
-    
+
                     <div className="flex justify-between">
                         <span className="text-sm text-ink-muted">Status</span>
                         <span className="text-sm font-medium text-green-600">
@@ -75,7 +75,7 @@ export default function Profile() {
                         </span>
                     </div>
                 </div>
-    
+
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                     <Input
                         label="Seller / display name"
@@ -88,9 +88,9 @@ export default function Profile() {
                             },
                         })}
                     />
-    
+
                     <Input label="Email" value={user.email || ""} disabled />
-    
+
                     <Input
                         label="Mobile"
                         type="tel"
@@ -99,7 +99,7 @@ export default function Profile() {
                             required: "Mobile number is required",
                         })}
                     />
-    
+
                     <Input
                         label="GSTIN"
                         hint="Re-enter your GSTIN each time you save — it isn't shown here for confirmation."
@@ -112,8 +112,8 @@ export default function Profile() {
                             },
                         })}
                     />
-    
-                        <div className="flex justify-center">
+
+                    <div className="flex justify-center">
                         <Button
                             type="submit"
                             variant="teal"
@@ -124,7 +124,7 @@ export default function Profile() {
                         </Button>
                     </div>
                 </form>
-    
+
                 <Link
                     to="/seller/change-password"
                     className="flex items-center gap-2 text-sm font-medium text-teal-600 hover:text-teal-700"

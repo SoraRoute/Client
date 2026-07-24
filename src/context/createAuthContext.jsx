@@ -24,7 +24,7 @@ export function createAuthContext({ fetchProfile, mapUser }) {
         // provider at the root shouldn't fire three simultaneous profile
         // requests. Each portal's ProtectedRoute/GuestRoute calls refresh() the
         // first time that portal is actually visited (see routes/ProtectedRoute.jsx).
-        
+
         const [isLoading, setIsLoading] = useState(false);
         const [hasChecked, setHasChecked] = useState(false);
 

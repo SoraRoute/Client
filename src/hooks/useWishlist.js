@@ -6,11 +6,13 @@ import { CUSTOMER_WISHLIST } from "../api/endpoints";
 import { useCustomerAuth } from "../context/CustomerAuthContext";
 
 export default function useWishlist() {
+    
     const { isAuthenticated } = useCustomerAuth();
     const navigate = useNavigate();
     const [wishlistedIds, setWishlistedIds] = useState(new Set());
 
     const loadWishlistIds = useCallback(async () => {
+
         if (!isAuthenticated) {
             setWishlistedIds(new Set());
             return;
@@ -26,13 +28,15 @@ export default function useWishlist() {
     useEffect(() => {
         loadWishlistIds();
     }, [loadWishlistIds]);
-    
+
 
     async function toggleWishlist(product) {
+
         if (!isAuthenticated) {
             navigate("/login");
             return;
         }
+
         const isWishlisted = wishlistedIds.has(product.id);
         try {
             if (isWishlisted) {

@@ -8,42 +8,42 @@ import { SELLER } from "../../api/endpoints";
 import Navbar from "./Navbar";
 
 // Navigation links shown in the seller dashboard sidebar.
-const NAV_ITEMS = 
-[
-	{ to: "/seller/dashboard", label: "Dashboard", icon: LayoutDashboard, end: true },
-	{ to: "/seller/products", label: "Products", icon: Package },
-	{ to: "/seller/orders", label: "Orders", icon: Receipt },
-	{ to: "/seller/revenue", label: "Revenue", icon: Wallet },
-	{ to: "/seller/profile", label: "Profile", icon: User },
-];
+const NAV_ITEMS =
+    [
+        { to: "/seller/dashboard", label: "Dashboard", icon: LayoutDashboard, end: true },
+        { to: "/seller/products", label: "Products", icon: Package },
+        { to: "/seller/orders", label: "Orders", icon: Receipt },
+        { to: "/seller/revenue", label: "Revenue", icon: Wallet },
+        { to: "/seller/profile", label: "Profile", icon: User },
+    ];
 
 export default function SellerLayout() {
 
-	const { clear } = useSellerAuth();
-	// Logs out the seller and clears the local auth state.
-	
-	async function handleLogout() {
-		try{
-			await axiosInstance.post(SELLER.LOGOUT);
+    const { clear } = useSellerAuth();
+    // Logs out the seller and clears the local auth state.
 
-		} catch (error) {
-			// Ignore API errors and continue clearing the session.
+    async function handleLogout() {
+        try {
+            await axiosInstance.post(SELLER.LOGOUT);
 
-		} finally {
-			clear();
-			toast.success("Logged out successfully.");
-		}
-	}
+        } catch (error) {
+            // Ignore API errors and continue clearing the session.
 
-	return (
-		<DashboardShell
-			portalName="Seller Studio"
-			accent="teal"
-			navItems={NAV_ITEMS}
-			onLogout={handleLogout}
-		>
-			{/* Renders the selected seller page */}
-			<Outlet />
-		</DashboardShell>
-	);
+        } finally {
+            clear();
+            toast.success("Logged out successfully.");
+        }
+    }
+
+    return (
+        <DashboardShell
+            portalName="Seller Studio"
+            accent="teal"
+            navItems={NAV_ITEMS}
+            onLogout={handleLogout}
+        >
+            {/* Renders the selected seller page */}
+            <Outlet />
+        </DashboardShell>
+    );
 }

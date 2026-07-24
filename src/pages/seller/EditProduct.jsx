@@ -15,227 +15,227 @@ import Button from "../../components/common/Button";
 import Loader from "../../components/common/Loader";
 import ErrorMessage from "../../components/common/ErrorMessage";
 
-export default function EditProduct(){
-	const { productId } = useParams();
-	const navigate = useNavigate();
+export default function EditProduct() {
+    const { productId } = useParams();
+    const navigate = useNavigate();
 
-	useDocumentTitle("Edit product");
+    useDocumentTitle("Edit product");
 
-	const { categories, isLoading: categoriesLoading } = useCategories();
+    const { categories, isLoading: categoriesLoading } = useCategories();
 
-	const [product, setProduct] = useState(null);
-	const [isLoading, setIsLoading] = useState(true);
-	const [error, setError] = useState("");
+    const [product, setProduct] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState("");
 
-	const {
-		register,
-		handleSubmit,
-		reset,
-		formState: { errors, isSubmitting },
-	} = useForm();
+    const {
+        register,
+        handleSubmit,
+        reset,
+        formState: { errors, isSubmitting },
+    } = useForm();
 
-	async function load(){
-		setIsLoading(true);
-		setError("");
+    async function load() {
+        setIsLoading(true);
+        setError("");
 
-		try {
-			const res = await axiosInstance.get(PRODUCTS.BY_ID(productId));
-			const data = res.data.data;
+        try {
+            const res = await axiosInstance.get(PRODUCTS.BY_ID(productId));
+            const data = res.data.data;
 
-			setProduct(data);
+            setProduct(data);
 
-			reset({
-				category_id: data.category_id,
-				title: data.title,
-				description: data.description || "",
-				brand: data.brand || "",
-				price: data.price,
-				discount_price: data.discount_price || "",
-				stock: data.stock,
-				status: data.status,
-			});
+            reset({
+                category_id: data.category_id,
+                title: data.title,
+                description: data.description || "",
+                brand: data.brand || "",
+                price: data.price,
+                discount_price: data.discount_price || "",
+                stock: data.stock,
+                status: data.status,
+            });
 
-	 	}catch (err) {
-			setError(err.friendlyMessage || "Failed to load this product.");
+        } catch (err) {
+            setError(err.friendlyMessage || "Failed to load this product.");
 
-		}finally {
-			setIsLoading(false);
-		}
- 	}
+        } finally {
+            setIsLoading(false);
+        }
+    }
 
-	useEffect(() => {
-		load();
-	}, [productId]);
+    useEffect(() => {
+        load();
+    }, [productId]);
 
-	async function onSubmit(values) {
-		try{
-			await axiosInstance.put(PRODUCTS.BY_ID(productId), {
-				category_id: values.category_id,
-				title: values.title,
-				description: values.description || "",
-				brand: values.brand || "",
-				price: values.price,
-				discount_price: values.discount_price || "0",
-				stock: values.stock,
-				status: values.status,
-			});
-			
-			toast.success("Product updated");
-			navigate("/seller/products");
+    async function onSubmit(values) {
+        try {
+            await axiosInstance.put(PRODUCTS.BY_ID(productId), {
+                category_id: values.category_id,
+                title: values.title,
+                description: values.description || "",
+                brand: values.brand || "",
+                price: values.price,
+                discount_price: values.discount_price || "0",
+                stock: values.stock,
+                status: values.status,
+            });
 
-		}catch (err) {
-			toast.error(err.friendlyMessage || "Failed to update product.");
-		}
-	}
+            toast.success("Product updated");
+            navigate("/seller/products");
 
-	if (isLoading) {
-		return <Loader fullScreen label="Loading product…" />;
-	}
+        } catch (err) {
+            toast.error(err.friendlyMessage || "Failed to update product.");
+        }
+    }
 
-	if (error || !product) {
-		return (
-		<ErrorMessage message={error || "Product not found."} onRetry={load} />
-		);
-	}
+    if (isLoading) {
+        return <Loader fullScreen label="Loading product…" />;
+    }
 
-	return (
-		<div className="mx-auto max-w-xl space-y-6">
-		<Link
-			to="/seller/products"
-			className="flex items-center gap-1 text-sm text-ink-muted hover:text-ink"
-		>
-			<ChevronLeft size={14} />
-			Your products
-		</Link>
+    if (error || !product) {
+        return (
+            <ErrorMessage message={error || "Product not found."} onRetry={load} />
+        );
+    }
 
-		<h1 className="font-display text-2xl font-semibold text-ink">
-			Edit product
-		</h1>
+    return (
+        <div className="mx-auto max-w-xl space-y-6">
+            <Link
+                to="/seller/products"
+                className="flex items-center gap-1 text-sm text-ink-muted hover:text-ink"
+            >
+                <ChevronLeft size={14} />
+                Your products
+            </Link>
 
-		<form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-			{/* Title */}
-			<Input
-			label="Title"
-			error={errors.title?.message}
-			{...register("title", {
-				required: "Title is required",
-				maxLength: {
-				value: 255,
-				message: "Too long",
-				},
-			})}
-			/>
+            <h1 className="font-display text-2xl font-semibold text-ink">
+                Edit product
+            </h1>
 
-			{/* Category */}
-			<label className="block">
-			<span className="mb-1.5 block text-sm font-medium text-ink-soft">
-				Category
-			</span>
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                {/* Title */}
+                <Input
+                    label="Title"
+                    error={errors.title?.message}
+                    {...register("title", {
+                        required: "Title is required",
+                        maxLength: {
+                            value: 255,
+                            message: "Too long",
+                        },
+                    })}
+                />
 
-			{categoriesLoading ? (
-				<Loader size={20} label="" />
-			) : (
-				<select
-				className="w-full rounded-xl border border-paper-line bg-paper-raised px-3.5 py-2.5 text-sm text-ink focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-300"
-				{...register("category_id", {
-					required: "Category is required",
-				})}
-				>
-				{categories.map((category) => (
-					<option key={category.id} value={category.id}>
-					{category.name}
-					</option>
-				))}
-				</select>
-			)}
-			</label>
+                {/* Category */}
+                <label className="block">
+                    <span className="mb-1.5 block text-sm font-medium text-ink-soft">
+                        Category
+                    </span>
 
-			{/* Price, Discount & Stock */}
-			<div className="grid grid-cols-3 gap-3">
-			<Input
-				label="Price"
-				type="number"
-				step="0.01"
-				min="0.01"
-				error={errors.price?.message}
-				{...register("price", {
-				required: "Price is required",
-				min: {
-					value: 0.01,
-					message: "Must be > 0",
-				},
-				})}
-			/>
+                    {categoriesLoading ? (
+                        <Loader size={20} label="" />
+                    ) : (
+                        <select
+                            className="w-full rounded-xl border border-paper-line bg-paper-raised px-3.5 py-2.5 text-sm text-ink focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-300"
+                            {...register("category_id", {
+                                required: "Category is required",
+                            })}
+                        >
+                            {categories.map((category) => (
+                                <option key={category.id} value={category.id}>
+                                    {category.name}
+                                </option>
+                            ))}
+                        </select>
+                    )}
+                </label>
 
-			<Input
-				label="Discount price"
-				type="number"
-				step="0.01"
-				min="0"
-				{...register("discount_price")}
-			/>
+                {/* Price, Discount & Stock */}
+                <div className="grid grid-cols-3 gap-3">
+                    <Input
+                        label="Price"
+                        type="number"
+                        step="0.01"
+                        min="0.01"
+                        error={errors.price?.message}
+                        {...register("price", {
+                            required: "Price is required",
+                            min: {
+                                value: 0.01,
+                                message: "Must be > 0",
+                            },
+                        })}
+                    />
 
-			<Input
-				label="Stock"
-				type="number"
-				step="1"
-				min="0"
-				error={errors.stock?.message}
-				{...register("stock", {
-				required: "Stock is required",
-				min: {
-					value: 0,
-					message: "Can't be negative",
-				},
-				})}
-			/>
-			</div>
+                    <Input
+                        label="Discount price"
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        {...register("discount_price")}
+                    />
 
-			{/* Brand */}
-			<Input
-			label="Brand (optional)"
-			{...register("brand", {
-				maxLength: {
-				value: 100,
-				message: "Too long",
-				},
-			})}
-			/>
+                    <Input
+                        label="Stock"
+                        type="number"
+                        step="1"
+                        min="0"
+                        error={errors.stock?.message}
+                        {...register("stock", {
+                            required: "Stock is required",
+                            min: {
+                                value: 0,
+                                message: "Can't be negative",
+                            },
+                        })}
+                    />
+                </div>
 
-			{/* Description */}
-			<label className="block">
-			<span className="mb-1.5 block text-sm font-medium text-ink-soft">
-				Description (optional)
-			</span>
+                {/* Brand */}
+                <Input
+                    label="Brand (optional)"
+                    {...register("brand", {
+                        maxLength: {
+                            value: 100,
+                            message: "Too long",
+                        },
+                    })}
+                />
 
-			<textarea
-				rows={4}
-				className="w-full rounded-xl border border-paper-line bg-paper-raised px-3.5 py-2.5 text-sm text-ink placeholder:text-ink-muted/70 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-300"
-				{...register("description")}
-			/>
-			</label>
+                {/* Description */}
+                <label className="block">
+                    <span className="mb-1.5 block text-sm font-medium text-ink-soft">
+                        Description (optional)
+                    </span>
 
-			{/* Status */}
-			<label className="block">
-			<span className="mb-1.5 block text-sm font-medium text-ink-soft">
-				Status
-			</span>
+                    <textarea
+                        rows={4}
+                        className="w-full rounded-xl border border-paper-line bg-paper-raised px-3.5 py-2.5 text-sm text-ink placeholder:text-ink-muted/70 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-300"
+                        {...register("description")}
+                    />
+                </label>
 
-			<select
-				className="w-full rounded-xl border border-paper-line bg-paper-raised px-3.5 py-2.5 text-sm text-ink focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-300"
-				{...register("status")}
-			>
-				<option value="ACTIVE">Active — visible to customers</option>
+                {/* Status */}
+                <label className="block">
+                    <span className="mb-1.5 block text-sm font-medium text-ink-soft">
+                        Status
+                    </span>
 
-				<option value="INACTIVE">Inactive — hidden from customers</option>
-			</select>
-			</label>
+                    <select
+                        className="w-full rounded-xl border border-paper-line bg-paper-raised px-3.5 py-2.5 text-sm text-ink focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-300"
+                        {...register("status")}
+                    >
+                        <option value="ACTIVE">Active — visible to customers</option>
 
-			{/* Submit */}
-			<Button type="submit" variant="teal" fullWidth isLoading={isSubmitting}>
-			Save changes
-			</Button>
-		</form>
-		</div>
-	);
+                        <option value="INACTIVE">Inactive — hidden from customers</option>
+                    </select>
+                </label>
+
+                {/* Submit */}
+                <Button type="submit" variant="teal" fullWidth isLoading={isSubmitting}>
+                    Save changes
+                </Button>
+            </form>
+        </div>
+    );
 }
