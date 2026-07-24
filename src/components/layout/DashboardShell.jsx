@@ -1,3 +1,6 @@
+// Shared Module
+// Authors: Nishtha & Pinki
+
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { LogOut, Menu, X, User } from "lucide-react";
@@ -25,6 +28,7 @@ export default function DashboardShell({
 }) {
     const [mobileOpen, setMobileOpen] = useState(false);
 
+    // Pick the color palette based on the active portal.
     const colors = ACCENT_CLASSES[accent];
 
     const linkClass = ({ isActive }) =>
@@ -35,7 +39,7 @@ export default function DashboardShell({
                 : "text-ink-muted hover:bg-ink/5 hover:text-ink",
         ].join(" ");
 
-
+    // Reuse the same navigation for desktop and mobile layouts.
     const sidebarContent = (
         <>
             <div className="flex items-center gap-2 px-2 py-2">
@@ -45,7 +49,6 @@ export default function DashboardShell({
                     {portalName}
                 </span>
             </div>
-
 
             <nav className="mt-4 flex flex-1 flex-col gap-1">
                 {navItems.map((item) => (
@@ -65,7 +68,6 @@ export default function DashboardShell({
                 ))}
             </nav>
 
-
             <button
                 onClick={onLogout}
                 className="mt-4 flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-ink-muted hover:bg-ink/5 hover:text-ink"
@@ -79,12 +81,11 @@ export default function DashboardShell({
     return (
         <div className="min-h-screen bg-paper">
 
-            {/* Top Navbar */}
+            {/* Top navigation */}
             <header className="flex h-16 border-b border-black bg-black">
 
-                {/* Logo */}
+                {/* Brand */}
                 <div className="flex w-64 items-center gap-3 px-6">
-
                     <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white">
                         <img
                             src="/favicon.svg"
@@ -93,16 +94,13 @@ export default function DashboardShell({
                         />
                     </div>
 
-
                     <h1 className="font-display text-lg font-bold text-white">
                         MarketHive
                     </h1>
-
                 </div>
 
-                {/* Right Profile */}
+                {/* Current user */}
                 <div className="ml-auto flex items-center gap-3 px-6">
-
                     <div className="hidden text-right sm:block">
                         <p className="text-sm font-medium text-white">
                             {portalName}
@@ -112,14 +110,11 @@ export default function DashboardShell({
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-800 text-white">
                         <User size={20} />
                     </div>
-
                 </div>
-
             </header>
 
-            {/* Mobile Header */}
+            {/* Mobile menu toggle */}
             <div className="flex items-center justify-between border-b border-paper-line bg-paper-raised px-4 py-3 md:hidden">
-
                 <span className="font-display text-sm font-semibold uppercase tracking-wide text-ink-muted">
                     {portalName}
                 </span>
@@ -127,27 +122,25 @@ export default function DashboardShell({
                 <button onClick={() => setMobileOpen((v) => !v)}>
                     {mobileOpen ? <X size={20} /> : <Menu size={20} />}
                 </button>
-
             </div>
 
-            {/* Mobile Sidebar */}
+            {/* Mobile navigation */}
             {mobileOpen && (
                 <div className="border-b border-paper-line bg-paper-raised px-3 pb-3 md:hidden">
                     {sidebarContent}
                 </div>
             )}
 
-            {/* Main Layout */}
+            {/* Dashboard layout */}
             <div className="flex min-h-[calc(100vh-4rem)]">
 
-                {/* Sidebar */}
+                {/* Desktop sidebar */}
                 <aside className="hidden w-64 shrink-0 flex-col border-r border-paper-line bg-paper-raised px-3 py-5 md:flex">
                     {sidebarContent}
                 </aside>
 
-                {/* Content + Footer */}
+                {/* Main content */}
                 <div className="flex flex-1 flex-col">
-
                     <main className="flex-1 px-4 py-6 sm:px-8 sm:py-8">
                         {children}
                     </main>

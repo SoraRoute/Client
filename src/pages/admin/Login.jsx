@@ -1,3 +1,6 @@
+// Admin Frontend
+// Authors: Nishtha & Pinki
+
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -22,8 +25,12 @@ export default function Login() {
 
     async function onSubmit(values) {
         try {
+            // Authenticate the admin user.
             await axiosInstance.post(ADMIN.LOGIN, values);
+
+            // Refresh the auth context after a successful login.
             await refresh();
+
             toast.success("Welcome back!");
             navigate("/admin/dashboard", { replace: true });
 
@@ -36,8 +43,9 @@ export default function Login() {
 
         <div className="flex min-h-screen items-center justify-center px-4 py-10">
 
+            {/* Admin login card */}
             <div className="w-full max-w-md rounded-3xl border border-plum-300/30 bg-plum-100/15 p-8 shadow-2xl backdrop-blur-lg">
-            
+
                 <h1 className="text-center font-display text-2xl font-semibold text-ink">
                     Admin Console
                 </h1>
@@ -46,6 +54,7 @@ export default function Login() {
                     Sign in to manage MarketHive
                 </p>
 
+                {/* Login form */}
                 <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-4">
                     <Input
                         label="Email"
@@ -71,7 +80,7 @@ export default function Login() {
                     </Button>
 
                 </form>
-                
+
             </div>
         </div>
     );

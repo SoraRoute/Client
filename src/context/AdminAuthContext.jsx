@@ -1,3 +1,6 @@
+// Shared Module
+// Authors: Nishtha & Pinki
+
 import axiosInstance from "../api/axiosInstance";
 import { ADMIN } from "../api/endpoints";
 import { createAuthContext } from "./createAuthContext";

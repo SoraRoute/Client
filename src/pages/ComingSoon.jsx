@@ -1,3 +1,6 @@
+// Shared Module
+// Authors: Nishtha & Pinki
+
 export default function ComingSoon({ title }) {
     return (
         <div className="flex min-h-[50vh] flex-col items-center justify-center gap-2 text-center">

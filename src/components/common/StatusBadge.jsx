@@ -1,3 +1,6 @@
+// Shared Module
+// Authors: Nishtha & Pinki
+
 const STATUS_STYLES = {
     PLACED: "bg-gold-50 text-gold-700",
     CONFIRMED: "bg-teal-50 text-teal-700",
@@ -14,8 +17,9 @@ const STATUS_STYLES = {
 
 export default function StatusBadge({ status }) {
 
+    // Fall back to a neutral style for unknown status values.
     const style = STATUS_STYLES[status] || "bg-ink/5 text-ink-soft";
-    
+
     return (
         <span
             className={[

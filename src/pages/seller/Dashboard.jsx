@@ -1,3 +1,6 @@
+// Seller Frontend
+// Author: Pinki
+
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Boxes, LayoutGrid, Package, PackageCheck, PackageX } from "lucide-react";
@@ -23,7 +26,9 @@ export default function Dashboard() {
     async function load() {
         setIsLoading(true);
         setError("");
+
         try {
+            // Fetch all dashboard data together for a faster initial load.
             const [summaryRes, statsRes, recentRes, categoryRes] = await Promise.all([
                 axiosInstance.get(SELLER_DASHBOARD.SUMMARY),
                 axiosInstance.get(SELLER_DASHBOARD.PRODUCT_STATISTICS),
@@ -44,6 +49,7 @@ export default function Dashboard() {
         }
     }
 
+    // Load the seller dashboard once after the page mounts.
     useEffect(() => {
         load();
     }, []);
@@ -54,9 +60,11 @@ export default function Dashboard() {
     return (
         <div className="space-y-8">
 
+            <h1 className="font-display text-2xl font-semibold text-ink">
+                Dashboard
+            </h1>
 
-            <h1 className="font-display text-2xl font-semibold text-ink">Dashboard</h1>
-
+            {/* Dashboard summary cards */}
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
                 <StatCard icon={Package} label="Total products" value={summary?.totalProducts ?? 0} accent="teal" />
                 <StatCard icon={PackageCheck} label="Active" value={summary?.activeProducts ?? 0} accent="teal" />
@@ -67,7 +75,10 @@ export default function Dashboard() {
 
             {productStats ? (
                 <section>
-                    <h2 className="mb-3 font-display text-lg font-semibold text-ink">Pricing overview</h2>
+                    <h2 className="mb-3 font-display text-lg font-semibold text-ink">
+                        Pricing overview
+                    </h2>
+
                     <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
                         <StatCard label="Average price" value={formatPrice(productStats.averagePrice)} />
                         <StatCard label="Highest price" value={formatPrice(productStats.highestPrice)} />
@@ -77,6 +88,8 @@ export default function Dashboard() {
             ) : null}
 
             <div className="space-y-8">
+
+                {/* Recently added products */}
                 <section>
                     <div className="mb-3 flex items-center justify-between">
                         <h2 className="font-display text-lg font-semibold text-ink">
@@ -118,7 +131,7 @@ export default function Dashboard() {
                     )}
                 </section>
 
-
+                {/* Product count grouped by category */}
                 <section>
                     <h2 className="mb-3 font-display text-lg font-semibold text-ink">
                         Products by category
@@ -145,6 +158,7 @@ export default function Dashboard() {
                         </div>
                     )}
                 </section>
+
             </div>
         </div>
     );

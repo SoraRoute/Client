@@ -1,3 +1,6 @@
+// Seller Frontend
+// Author: Pinki
+
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -39,6 +42,7 @@ export default function EditProduct() {
         setError("");
 
         try {
+            // Load the existing product so the form starts with current values.
             const res = await axiosInstance.get(PRODUCTS.BY_ID(productId));
             const data = res.data.data;
 
@@ -63,12 +67,14 @@ export default function EditProduct() {
         }
     }
 
+    // Reload product details whenever a different product is opened.
     useEffect(() => {
         load();
     }, [productId]);
 
     async function onSubmit(values) {
         try {
+            // Save the updated product information.
             await axiosInstance.put(PRODUCTS.BY_ID(productId), {
                 category_id: values.category_id,
                 title: values.title,
@@ -112,8 +118,10 @@ export default function EditProduct() {
                 Edit product
             </h1>
 
+            {/* Product edit form */}
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                {/* Title */}
+
+                {/* Product title */}
                 <Input
                     label="Title"
                     error={errors.title?.message}
@@ -126,7 +134,7 @@ export default function EditProduct() {
                     })}
                 />
 
-                {/* Category */}
+                {/* Product category */}
                 <label className="block">
                     <span className="mb-1.5 block text-sm font-medium text-ink-soft">
                         Category
@@ -150,7 +158,7 @@ export default function EditProduct() {
                     )}
                 </label>
 
-                {/* Price, Discount & Stock */}
+                {/* Pricing and inventory */}
                 <div className="grid grid-cols-3 gap-3">
                     <Input
                         label="Price"
@@ -191,7 +199,7 @@ export default function EditProduct() {
                     />
                 </div>
 
-                {/* Brand */}
+                {/* Optional product details */}
                 <Input
                     label="Brand (optional)"
                     {...register("brand", {
@@ -202,7 +210,6 @@ export default function EditProduct() {
                     })}
                 />
 
-                {/* Description */}
                 <label className="block">
                     <span className="mb-1.5 block text-sm font-medium text-ink-soft">
                         Description (optional)
@@ -215,7 +222,7 @@ export default function EditProduct() {
                     />
                 </label>
 
-                {/* Status */}
+                {/* Product visibility */}
                 <label className="block">
                     <span className="mb-1.5 block text-sm font-medium text-ink-soft">
                         Status
@@ -226,12 +233,11 @@ export default function EditProduct() {
                         {...register("status")}
                     >
                         <option value="ACTIVE">Active — visible to customers</option>
-
                         <option value="INACTIVE">Inactive — hidden from customers</option>
                     </select>
                 </label>
 
-                {/* Submit */}
+                {/* Save updates */}
                 <Button type="submit" variant="teal" fullWidth isLoading={isSubmitting}>
                     Save changes
                 </Button>

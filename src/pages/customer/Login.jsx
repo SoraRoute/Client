@@ -1,3 +1,6 @@
+// Customer Frontend
+// Author: Nishtha
+
 import { useForm } from "react-hook-form";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -10,6 +13,7 @@ import Button from "../../components/common/Button";
 
 export default function Login() {
     useDocumentTitle("Sign in");
+
     const navigate = useNavigate();
     const location = useLocation();
     const { refresh } = useCustomerAuth();
@@ -22,11 +26,18 @@ export default function Login() {
 
     async function onSubmit(values) {
         try {
+            // Authenticate the customer.
             await axiosInstance.post(CUSTOMER.LOGIN, values);
+
+            // Refresh the logged-in customer data.
             await refresh();
+
             toast.success("Welcome back!");
+
+            // Return the user to their previous page after login.
             const redirectTo = location.state?.from?.pathname || "/";
             navigate(redirectTo, { replace: true });
+
         } catch (err) {
             toast.error(err.friendlyMessage || "Login failed.");
         }
@@ -34,15 +45,20 @@ export default function Login() {
 
     return (
         <div className="flex justify-center py-10">
+
             <div className="w-full max-w-md rounded-2xl border border-yellow-300/40 bg-yellow-100/20 p-8 shadow-xl backdrop-blur-md">
+
                 <h1 className="text-center font-display text-2xl font-semibold text-ink">
                     Sign in
                 </h1>
+
                 <p className="mt-1 text-center text-sm text-ink-muted">
                     Welcome back to MarketHive
                 </p>
 
+                {/* Login form */}
                 <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-4">
+
                     <Input
                         label="Email"
                         type="email"
@@ -69,6 +85,7 @@ export default function Login() {
                     <Button type="submit" fullWidth isLoading={isSubmitting}>
                         Sign in
                     </Button>
+
                 </form>
 
                 <p className="mt-6 text-center text-sm text-ink-muted">
@@ -80,6 +97,7 @@ export default function Login() {
                         Create an account
                     </Link>
                 </p>
+
             </div>
         </div>
     );

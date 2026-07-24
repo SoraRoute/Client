@@ -1,51 +1,167 @@
+
+// Author: Nishtha and Pinki
+
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { KeyRound } from "lucide-react";
-import { useAdminAuth } from "../../context/AdminAuthContext";
-import { formatDate } from "../../utils/format";
+import { Package, Trash2 } from "lucide-react";
+import toast from "react-hot-toast";
+import axiosInstance from "../../api/axiosInstance";
+import { ADMIN_PRODUCTS } from "../../api/endpoints";
+import { formatPrice } from "../../utils/format";
 import useDocumentTitle from "../../hooks/useDocumentTitle";
 import Loader from "../../components/common/Loader";
+import ErrorMessage from "../../components/common/ErrorMessage";
+import EmptyState from "../../components/common/EmptyState";
+import StatusBadge from "../../components/common/StatusBadge";
 
-function Field({ label, value }) {
+export default function Products() {
+
+    useDocumentTitle("Products");
+
+    const [products, setProducts] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState("");
+    const [pendingId, setPendingId] = useState(null);
+
+    async function load() {
+
+        setIsLoading(true);
+        setError("");
+
+        try {
+            // Load all products for the admin panel.
+            const res = await axiosInstance.get(ADMIN_PRODUCTS.BASE);
+            setProducts(res.data.data || []);
+
+        } catch (err) {
+            setError(err.friendlyMessage || "Failed to load products.");
+
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    // Fetch products when the page loads.
+    useEffect(() => {
+        load();
+    }, []);
+
+    async function toggleStatus(product) {
+
+        // Toggle between ACTIVE and INACTIVE.
+        const nextStatus = product.status === "ACTIVE" ? "INACTIVE" : "ACTIVE";
+        setPendingId(product.id);
+
+        try {
+            await axiosInstance.patch(ADMIN_PRODUCTS.STATUS(product.id), { status: nextStatus });
+
+            // Update only the changed product in local state.
+            setProducts((prev) => prev.map((p) => (p.id === product.id ? { ...p, status: nextStatus } : p)));
+
+            toast.success(nextStatus === "ACTIVE" ? "Product activated" : "Product deactivated");
+
+        } catch (err) {
+            toast.error(err.friendlyMessage || "Failed to update status.");
+
+        } finally {
+            setPendingId(null);
+        }
+    }
+
+    async function handleDelete(product) {
+
+        if (!window.confirm(`Delete "${product.title}"? This cannot be undone.`)) return;
+
+        try {
+            await axiosInstance.delete(ADMIN_PRODUCTS.BY_ID(product.id));
+
+            // Remove the deleted product from the table.
+            setProducts((prev) => prev.filter((p) => p.id !== product.id));
+
+            toast.success("Product deleted");
+
+        } catch (err) {
+            toast.error(err.friendlyMessage || "Failed to delete product.");
+        }
+    }
+
+    if (isLoading) return <Loader fullScreen label="Loading products…" />;
+
+    if (error) return <ErrorMessage message={error} onRetry={load} />;
+
+    if (products.length === 0) {
+        return <EmptyState icon={Package} title="No products yet" />;
+    }
 
     return (
-        <div>
-            <p className="text-xs uppercase tracking-wide text-ink-muted">{label}</p>
-            <p className="mt-0.5 text-sm text-ink">{value || "—"}</p>
-        </div>
-    );
-}
+        <div className="space-y-6">
 
-export default function Profile() {
+            <h1 className="font-display text-2xl font-semibold text-ink">Products</h1>
 
-    useDocumentTitle("Your profile");
-    const { user, isLoading } = useAdminAuth();
+            {/* Product management table */}
+            <div className="overflow-x-auto rounded-2xl border border-paper-line bg-paper-raised">
 
-    if (isLoading || !user) return <Loader fullScreen label="Loading your profile…" />;
+                <table className="w-full text-sm">
+                    <thead>
+                        <tr className="border-b border-paper-line text-left text-xs uppercase tracking-wide text-ink-muted">
+                            <th className="px-4 py-3 font-medium">Product</th>
+                            <th className="px-4 py-3 font-medium">Price</th>
+                            <th className="px-4 py-3 font-medium">Stock</th>
+                            <th className="px-4 py-3 font-medium">Status</th>
+                            <th className="px-4 py-3 font-medium text-right">Actions</th>
+                        </tr>
+                    </thead>
 
-    return (
+                    <tbody>
+                        {products.map((product) => (
 
-        <div className="mx-auto max-w-md space-y-8">
+                            <tr key={product.id} className="border-b border-paper-line last:border-none">
 
-            <h1 className="font-display text-2xl font-semibold text-ink">Your profile</h1>
+                                <td className="px-4 py-3">
+                                    {/* Open product details */}
+                                    <Link to={`/admin/products/${product.id}`} className="line-clamp-1 font-medium text-ink hover:underline">
+                                        {product.title}
+                                    </Link>
+                                    {product.brand ? <p className="text-xs text-ink-muted">{product.brand}</p> : null}
+                                </td>
 
-            <div className="rounded-2xl border border-paper-line bg-paper-raised p-6">
-                <div className="grid grid-cols-2 gap-4">
-                    <Field label="First name" value={user.first_name} />
-                    <Field label="Last name" value={user.last_name} />
-                    <Field label="Email" value={user.email} />
-                    <Field label="Mobile" value={user.mobile} />
-                    <Field label="Role" value={user.role} />
-                    <Field label="Admin since" value={formatDate(user.created_at)} />
-                </div>
+                                <td className="px-4 py-3 text-ink-soft">{formatPrice(product.price)}</td>
+                                <td className="px-4 py-3 text-ink-soft">{product.stock}</td>
+
+                                <td className="px-4 py-3">
+                                    <button
+                                        type="button"
+                                        onClick={() => toggleStatus(product)}
+                                        disabled={pendingId === product.id}
+                                        className="disabled:opacity-50"
+                                        title="Click to toggle status"
+                                    >
+                                        <StatusBadge status={product.status} />
+                                    </button>
+                                </td>
+
+                                <td className="px-4 py-3">
+
+                                    <div className="flex justify-end">
+
+                                        <button
+                                            type="button"
+                                            onClick={() => handleDelete(product)}
+                                            className="flex h-8 w-8 items-center justify-center rounded-full text-ink-muted hover:bg-danger-50 hover:text-danger-500"
+                                            aria-label="Delete product"
+                                        >
+                                            <Trash2 size={14} />
+                                        </button>
+
+                                    </div>
+
+                                </td>
+                            </tr>
+                        ))}
+
+                    </tbody>
+                </table>
             </div>
-
-            <Link
-                to="/admin/change-password"
-                className="flex items-center gap-2 text-sm font-medium text-plum-600 hover:text-plum-700"
-            >
-                <KeyRound size={16} /> Change password
-            </Link>
-            
         </div>
     );
 }

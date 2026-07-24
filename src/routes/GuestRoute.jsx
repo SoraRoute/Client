@@ -1,3 +1,6 @@
+// Shared Module
+// Authors: Nishtha & Pinki
+
 import { useEffect } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import Loader from "../components/common/Loader";

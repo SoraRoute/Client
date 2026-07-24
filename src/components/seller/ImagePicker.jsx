@@ -1,3 +1,6 @@
+// Seller Frontend
+// Author: Pinki
+
 import { useRef } from "react";
 import { ImagePlus, X } from "lucide-react";
 

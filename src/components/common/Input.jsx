@@ -1,3 +1,6 @@
+// Shared Module
+// Authors: Nishtha & Pinki
+
 import { forwardRef, useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 
@@ -6,6 +9,8 @@ const Input = forwardRef(function Input(
     ref,
 ) {
     const [showPassword, setShowPassword] = useState(false);
+
+    // Toggle between masked and visible password input.
     const isPassword = type === "password";
     const resolvedType = isPassword ? (showPassword ? "text" : "password") : type;
 
@@ -33,6 +38,7 @@ const Input = forwardRef(function Input(
                     {...rest}
                 />
 
+                {/* Password visibility toggle */}
                 {isPassword ? (
                     <button
                         type="button"
@@ -47,12 +53,13 @@ const Input = forwardRef(function Input(
 
             </span>
 
+            {/* Show validation error before helper text */}
             {error ? (
                 <span className="mt-1 block text-xs text-danger-500">{error}</span>
             ) : hint ? (
                 <span className="mt-1 block text-xs text-ink-muted">{hint}</span>
             ) : null}
-            
+
         </label>
     );
 });

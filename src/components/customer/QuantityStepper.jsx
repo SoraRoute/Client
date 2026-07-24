@@ -1,7 +1,11 @@
+// Customer Frontend
+// Author: Nishtha
+
 import { Minus, Plus } from "lucide-react";
 
 export default function QuantityStepper({ value, onChange, min = 1, max = 99, disabled = false }) {
 
+    // Keep the quantity within the allowed range.
     function step(delta) {
         const next = Math.min(max, Math.max(min, value + delta));
         if (next !== value) onChange(next);
@@ -21,6 +25,7 @@ export default function QuantityStepper({ value, onChange, min = 1, max = 99, di
                 <Minus size={14} />
             </button>
 
+            {/* Current quantity */}
             <span className="w-8 text-center text-sm font-medium text-ink" aria-live="polite">
                 {value}
             </span>
@@ -34,7 +39,7 @@ export default function QuantityStepper({ value, onChange, min = 1, max = 99, di
             >
                 <Plus size={14} />
             </button>
-            
+
         </span>
     );
 }

@@ -1,3 +1,6 @@
+// Shared Module
+// Authors: Nishtha & Pinki
+
 export default function StatCard({ icon: Icon, label, value, accent = "gold" }) {
 
     // Choose the icon color based on the selected accent.

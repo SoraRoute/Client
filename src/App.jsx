@@ -1,3 +1,6 @@
+// Shared Module
+// Authors: Nishtha & Pinki
+
 import { Routes, Route } from "react-router-dom";
 
 import CustomerLayout from "./components/layout/CustomerLayout";
@@ -59,7 +62,8 @@ import AdminChangePassword from "./pages/admin/ChangePassword";
 export default function App() {
     return (
         <Routes>
-            {/* ---------------- Customer portal ---------------- */}
+
+            {/* Customer routes */}
             <Route element={<CustomerLayout />}>
                 <Route path="/" element={<Home />} />
                 <Route path="/products" element={<Shop />} />
@@ -68,12 +72,14 @@ export default function App() {
                 <Route path="/categories/:categoryId" element={<CategoryProducts />} />
                 <Route path="/search" element={<Search />} />
 
+                {/* Public customer authentication */}
                 <Route element={<GuestRoute useAuth={useCustomerAuth} redirectTo="/" />}>
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
                     <Route path="/forgot-password" element={<ForgotPassword />} />
                 </Route>
 
+                {/* Customer account area */}
                 <Route element={<ProtectedRoute useAuth={useCustomerAuth} redirectTo="/login" />}>
                     <Route path="/cart" element={<Cart />} />
                     <Route path="/checkout" element={<Checkout />} />
@@ -86,13 +92,14 @@ export default function App() {
                 </Route>
             </Route>
 
-            {/* ---------------- Seller portal ---------------- */}
+            {/* Seller authentication */}
             <Route element={<GuestRoute useAuth={useSellerAuth} redirectTo="/seller/dashboard" />}>
                 <Route path="/seller/login" element={<SellerLogin />} />
                 <Route path="/seller/register" element={<SellerRegister />} />
                 <Route path="/seller/forgot-password" element={<SellerForgotPassword />} />
             </Route>
 
+            {/* Seller dashboard */}
             <Route element={<ProtectedRoute useAuth={useSellerAuth} redirectTo="/seller/login" />}>
                 <Route element={<SellerLayout />}>
                     <Route path="/seller/dashboard" element={<SellerDashboard />} />
@@ -106,11 +113,12 @@ export default function App() {
                 </Route>
             </Route>
 
-            {/* ---------------- Admin portal ---------------- */}
+            {/* Admin authentication */}
             <Route element={<GuestRoute useAuth={useAdminAuth} redirectTo="/admin/dashboard" />}>
                 <Route path="/admin/login" element={<AdminLogin />} />
             </Route>
 
+            {/* Admin dashboard */}
             <Route element={<ProtectedRoute useAuth={useAdminAuth} redirectTo="/admin/login" />}>
                 <Route element={<AdminLayout />}>
                     <Route path="/admin/dashboard" element={<AdminDashboard />} />
@@ -126,7 +134,7 @@ export default function App() {
                 </Route>
             </Route>
 
-            {/* ---------------- Fallbacks ---------------- */}
+            {/* Shared fallback pages */}
             <Route path="/unauthorized" element={<Unauthorized />} />
             <Route path="*" element={<NotFound />} />
         </Routes>

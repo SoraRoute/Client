@@ -1,3 +1,6 @@
+
+// Author: Nishtha and Pinki
+
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Package, Trash2 } from "lucide-react";
@@ -24,7 +27,9 @@ export default function Products() {
 
         setIsLoading(true);
         setError("");
+
         try {
+            // Load all products for the admin panel.
             const res = await axiosInstance.get(ADMIN_PRODUCTS.BASE);
             setProducts(res.data.data || []);
 
@@ -36,18 +41,23 @@ export default function Products() {
         }
     }
 
+    // Fetch products when the page loads.
     useEffect(() => {
         load();
     }, []);
 
     async function toggleStatus(product) {
 
+        // Toggle between ACTIVE and INACTIVE.
         const nextStatus = product.status === "ACTIVE" ? "INACTIVE" : "ACTIVE";
         setPendingId(product.id);
 
         try {
             await axiosInstance.patch(ADMIN_PRODUCTS.STATUS(product.id), { status: nextStatus });
+
+            // Update only the changed product in local state.
             setProducts((prev) => prev.map((p) => (p.id === product.id ? { ...p, status: nextStatus } : p)));
+
             toast.success(nextStatus === "ACTIVE" ? "Product activated" : "Product deactivated");
 
         } catch (err) {
@@ -64,7 +74,10 @@ export default function Products() {
 
         try {
             await axiosInstance.delete(ADMIN_PRODUCTS.BY_ID(product.id));
+
+            // Remove the deleted product from the table.
             setProducts((prev) => prev.filter((p) => p.id !== product.id));
+
             toast.success("Product deleted");
 
         } catch (err) {
@@ -85,6 +98,7 @@ export default function Products() {
 
             <h1 className="font-display text-2xl font-semibold text-ink">Products</h1>
 
+            {/* Product management table */}
             <div className="overflow-x-auto rounded-2xl border border-paper-line bg-paper-raised">
 
                 <table className="w-full text-sm">
@@ -104,6 +118,7 @@ export default function Products() {
                             <tr key={product.id} className="border-b border-paper-line last:border-none">
 
                                 <td className="px-4 py-3">
+                                    {/* Open product details */}
                                     <Link to={`/admin/products/${product.id}`} className="line-clamp-1 font-medium text-ink hover:underline">
                                         {product.title}
                                     </Link>
@@ -124,7 +139,7 @@ export default function Products() {
                                         <StatusBadge status={product.status} />
                                     </button>
                                 </td>
-                                
+
                                 <td className="px-4 py-3">
 
                                     <div className="flex justify-end">
@@ -143,7 +158,7 @@ export default function Products() {
                                 </td>
                             </tr>
                         ))}
-                        
+
                     </tbody>
                 </table>
             </div>

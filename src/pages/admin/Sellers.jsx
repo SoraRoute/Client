@@ -1,3 +1,6 @@
+
+// Author: Nishtha and Pinki
+
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Store } from "lucide-react";
@@ -11,6 +14,7 @@ import ErrorMessage from "../../components/common/ErrorMessage";
 import EmptyState from "../../components/common/EmptyState";
 import StatusBadge from "../../components/common/StatusBadge";
 
+// Allowed account status values for sellers.
 const STATUS_OPTIONS = ["PENDING", "ACTIVE", "SUSPENDED"];
 
 export default function Sellers() {
@@ -28,6 +32,7 @@ export default function Sellers() {
         setError("");
 
         try {
+            // Fetch all registered sellers.
             const res = await axiosInstance.get(ADMIN_SELLERS.BASE);
             setSellers(res.data.data || []);
 
@@ -39,20 +44,26 @@ export default function Sellers() {
         }
     }
 
+    // Load sellers when the page is opened.
     useEffect(() => {
         load();
     }, []);
 
     async function handleStatusChange(seller, nextStatus) {
 
+        // Skip if the selected status is already applied.
         if (!nextStatus || nextStatus === seller.account_status) return;
+
         setPendingId(seller.id);
 
         try {
             await axiosInstance.patch(ADMIN_SELLERS.STATUS(seller.id), { account_status: nextStatus });
+
+            // Update only the modified seller in local state.
             setSellers((prev) =>
                 prev.map((s) => (s.id === seller.id ? { ...s, account_status: nextStatus } : s)),
             );
+
             toast.success("Seller status updated");
 
         } catch (err) {
@@ -77,6 +88,7 @@ export default function Sellers() {
 
             <h1 className="font-display text-2xl font-semibold text-ink">Sellers</h1>
 
+            {/* Seller management table */}
             <div className="overflow-x-auto rounded-2xl border border-paper-line bg-paper-raised">
 
                 <table className="w-full text-sm">
@@ -92,18 +104,21 @@ export default function Sellers() {
                     </thead>
 
                     <tbody>
-                        
+
                         {sellers.map((seller) => (
                             <tr key={seller.id} className="border-b border-paper-line last:border-none">
 
                                 <td className="px-4 py-3">
+                                    {/* Open seller details */}
                                     <Link to={`/admin/sellers/${seller.id}`} className="font-medium text-ink hover:underline">
                                         {seller.seller_name}
                                     </Link>
                                     <p className="text-xs text-ink-muted">{seller.email}</p>
                                 </td>
+
                                 <td className="px-4 py-3 text-ink-soft">{seller.gstin}</td>
                                 <td className="px-4 py-3 text-ink-soft">{formatDate(seller.created_at)}</td>
+
                                 <td className="px-4 py-3">
                                     <StatusBadge status={seller.account_status} />
                                 </td>

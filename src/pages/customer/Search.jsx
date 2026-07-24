@@ -1,3 +1,6 @@
+// Customer Frontend
+// Author: Nishtha
+
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Search as SearchIcon } from "lucide-react";
@@ -20,24 +23,31 @@ export default function Search() {
     useDocumentTitle(keyword ? `Search · ${keyword}` : "Search");
 
     async function load(term) {
+        // Skip the API call for an empty search.
         if (!term.trim()) {
             setProducts([]);
             return;
         }
+
         setIsLoading(true);
         setError("");
+
         try {
             const res = await axiosInstance.get(CUSTOMER_PRODUCTS.SEARCH, {
                 params: { keyword: term },
             });
+
             setProducts(res.data.products || []);
+
         } catch (err) {
             setError(err.friendlyMessage || "Search failed.");
+
         } finally {
             setIsLoading(false);
         }
     }
 
+    // Refresh results whenever the search keyword changes.
     useEffect(() => {
         setInputValue(keyword);
         load(keyword);
@@ -46,13 +56,21 @@ export default function Search() {
 
     function handleSubmit(e) {
         e.preventDefault();
+
+        // Keep the search term in the URL for easy sharing and navigation.
         setSearchParams(inputValue.trim() ? { keyword: inputValue.trim() } : {});
     }
 
     return (
         <div className="space-y-6">
+
+            {/* Search input */}
             <form onSubmit={handleSubmit} className="relative mx-auto max-w-xl">
-                <SearchIcon size={18} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-ink-muted" />
+                <SearchIcon
+                    size={18}
+                    className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-ink-muted"
+                />
+
                 <input
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
@@ -67,6 +85,8 @@ export default function Search() {
                     <p className="text-sm text-ink-muted">
                         Results for <span className="font-medium text-ink">&ldquo;{keyword}&rdquo;</span>
                     </p>
+
+                    {/* Matching products */}
                     <ProductGrid
                         products={products}
                         isLoading={isLoading}
@@ -79,6 +99,7 @@ export default function Search() {
                     />
                 </>
             ) : null}
+
         </div>
     );
 }

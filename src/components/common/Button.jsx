@@ -1,3 +1,6 @@
+// Shared Module
+// Authors: Nishtha & Pinki
+
 import { forwardRef } from "react";
 import Loader from "./Loader";
 

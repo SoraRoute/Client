@@ -1,5 +1,9 @@
+// Shared Module
+// Authors: Nishtha & Pinki
+
 export default function StatCard({ icon: Icon, label, value, accent = "gold" }) {
 
+    // Match the icon accent with the active dashboard theme.
     const accentClass =
         accent === "teal"
             ? "bg-teal-50 text-teal-600"
@@ -13,6 +17,7 @@ export default function StatCard({ icon: Icon, label, value, accent = "gold" }) 
 
             <div className="flex items-center gap-3">
 
+                {/* Optional stat icon */}
                 {Icon ? (
 
                     <span className={`flex h-9 w-9 items-center justify-center rounded-full ${accentClass}`}>
@@ -24,8 +29,9 @@ export default function StatCard({ icon: Icon, label, value, accent = "gold" }) 
 
             </div>
 
+            {/* Primary metric */}
             <p className="mt-3 font-display text-2xl font-semibold text-ink">{value}</p>
-            
+
         </div>
     );
 }

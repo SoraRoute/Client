@@ -1,3 +1,6 @@
+// Admin Frontend
+// Authors: Nishtha & Pinki
+
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
@@ -21,6 +24,7 @@ export default function ChangePassword() {
 
     async function onSubmit(values) {
 
+        // Make sure both password fields match before sending the request.
         if (values.newPassword !== values.confirmPassword) {
             setError("confirmPassword", { message: "Passwords do not match" });
             return;
@@ -28,11 +32,15 @@ export default function ChangePassword() {
 
         try {
 
+            // Update the admin password.
             await axiosInstance.put(ADMIN.CHANGE_PASSWORD, {
                 oldPassword: values.oldPassword,
                 newPassword: values.newPassword,
             });
+
             toast.success("Password changed");
+
+            // Return to the profile page after a successful update.
             navigate("/admin/profile");
 
         } catch (err) {
@@ -44,12 +52,14 @@ export default function ChangePassword() {
 
         <div className="mx-auto max-w-sm space-y-6">
 
+            {/* Back link to the profile page */}
             <Link to="/admin/profile" className="flex items-center gap-1 text-sm text-ink-muted hover:text-ink">
                 <ChevronLeft size={14} /> Your profile
             </Link>
 
             <h1 className="font-display text-2xl font-semibold text-ink">Change password</h1>
 
+            {/* Password change form */}
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <Input
                     label="Current password"
@@ -79,7 +89,7 @@ export default function ChangePassword() {
                 <Button type="submit" variant="plum" fullWidth isLoading={isSubmitting}>
                     Change password
                 </Button>
-                
+
             </form>
         </div>
     );

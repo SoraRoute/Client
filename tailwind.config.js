@@ -1,3 +1,6 @@
+// Shared Module
+// Authors: Nishtha & Pinki
+
 /** @type {import('tailwindcss').Config} */
 
 export default {

@@ -1,3 +1,6 @@
+// Seller Frontend
+// Author: Pinki
+
 import { useEffect, useState } from "react";
 import { Wallet } from "lucide-react";
 import axiosInstance from "../../api/axiosInstance";
@@ -17,16 +20,21 @@ export default function Revenue() {
     async function load() {
         setIsLoading(true);
         setError("");
+
         try {
+            // Fetch the seller's latest revenue summary.
             const res = await axiosInstance.get(SELLER.REVENUE);
             setRevenue(res.data.data);
+
         } catch (err) {
             setError(err.friendlyMessage || "Failed to load revenue.");
+
         } finally {
             setIsLoading(false);
         }
     }
 
+    // Load revenue details when the page opens.
     useEffect(() => {
         load();
     }, []);
@@ -41,14 +49,15 @@ export default function Revenue() {
             </h1>
 
             <div className="grid gap-6 md:grid-cols-2">
-                {/* Main Revenue Card */}
+
+                {/* Revenue summary */}
                 <div
                     className="
-                        rounded-2xl 
-                        border border-paper-line 
-                        bg-paper-raised 
+                        rounded-2xl
+                        border border-paper-line
+                        bg-paper-raised
                         p-8
-                        transition-all 
+                        transition-all
                         duration-300
                         hover:-translate-y-1
                         hover:shadow-[0_10px_35px_rgba(31,111,99,0.18)]
@@ -75,11 +84,9 @@ export default function Revenue() {
                             Earnings from delivered orders
                         </p>
                     </div>
-
                 </div>
 
-
-                {/* Information Card */}
+                {/* Additional revenue details */}
                 <div
                     className="
                         rounded-2xl

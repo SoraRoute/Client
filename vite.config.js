@@ -1,3 +1,6 @@
+// Shared Module
+// Authors: Nishtha & Pinki
+
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 

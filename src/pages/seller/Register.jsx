@@ -1,3 +1,6 @@
+// Seller Frontend
+// Author: Pinki
+
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
@@ -33,10 +36,14 @@ export default function Register() {
 
     async function submitEmail(values) {
         try {
+            // Start registration by sending an email verification OTP.
             await axiosInstance.post(SELLER.SEND_OTP, { email: values.email });
+
             setEmail(values.email);
             setStep("otp");
+
             toast.success("OTP sent to your email");
+
         } catch (err) {
             toast.error(err.friendlyMessage || "Failed to send OTP.");
         }
@@ -44,10 +51,14 @@ export default function Register() {
 
     async function submitOtp(values) {
         try {
+            // Store the verification token for the final registration request.
             const res = await axiosInstance.post(SELLER.VERIFY_OTP, { email, otp: values.otp });
+
             setVerificationToken(res.data.verificationToken);
             setStep("details");
+
             toast.success("Email verified");
+
         } catch (err) {
             toast.error(err.friendlyMessage || "OTP verification failed.");
         }
@@ -55,22 +66,28 @@ export default function Register() {
 
     async function resendOtp() {
         setIsResending(true);
+
         try {
             await axiosInstance.post(SELLER.SEND_OTP, { email });
             toast.success("OTP resent");
+
         } catch (err) {
             toast.error(err.friendlyMessage || "Failed to resend OTP.");
+
         } finally {
             setIsResending(false);
         }
     }
 
     async function submitDetails(values) {
+        // Prevent submitting mismatched passwords.
         if (values.password !== values.confirmPassword) {
             detailsForm.setError("confirmPassword", { message: "Passwords do not match" });
             return;
         }
+
         try {
+            // Submit the complete seller registration after email verification.
             await axiosInstance.post(
                 SELLER.REGISTER,
                 {
@@ -104,8 +121,10 @@ export default function Register() {
                 },
                 { headers: { Authorization: `Bearer ${verificationToken}` } },
             );
+
             toast.success("Registration submitted — you can now sign in.");
             navigate("/seller/login");
+
         } catch (err) {
             toast.error(err.friendlyMessage || "Registration failed.");
         }
@@ -120,10 +139,12 @@ export default function Register() {
                     <h1 className="text-center font-display text-2xl font-semibold text-ink">
                         Become a MarketHive seller
                     </h1>
+
                     <p className="mt-1 text-center text-sm text-ink-muted">
                         Step {stepIndex + 1} of {STEPS.length}
                     </p>
 
+                    {/* Step 1: Email verification */}
                     {step === "email" ? (
                         <form onSubmit={emailForm.handleSubmit(submitEmail)} className="mx-auto mt-8 max-w-sm space-y-4">
                             <Input
@@ -132,9 +153,11 @@ export default function Register() {
                                 error={emailForm.formState.errors.email?.message}
                                 {...emailForm.register("email", { required: "Email is required" })}
                             />
+
                             <Button type="submit" variant="teal" fullWidth isLoading={emailForm.formState.isSubmitting}>
                                 Send OTP
                             </Button>
+
                             <p className="text-center text-sm text-ink-muted">
                                 Already registered?{" "}
                                 <Link to="/seller/login" className="font-medium text-teal-600 hover:text-teal-700">
@@ -144,18 +167,24 @@ export default function Register() {
                         </form>
                     ) : null}
 
+                    {/* Step 2: OTP verification */}
                     {step === "otp" ? (
                         <form onSubmit={otpForm.handleSubmit(submitOtp)} className="mx-auto mt-8 max-w-sm space-y-4">
-                            <p className="text-center text-sm text-ink-muted">Enter the OTP sent to {email}</p>
+                            <p className="text-center text-sm text-ink-muted">
+                                Enter the OTP sent to {email}
+                            </p>
+
                             <Input
                                 label="OTP"
                                 inputMode="numeric"
                                 error={otpForm.formState.errors.otp?.message}
                                 {...otpForm.register("otp", { required: "OTP is required" })}
                             />
+
                             <Button type="submit" variant="teal" fullWidth isLoading={otpForm.formState.isSubmitting}>
                                 Verify email
                             </Button>
+
                             <button
                                 type="button"
                                 onClick={resendOtp}
@@ -167,8 +196,11 @@ export default function Register() {
                         </form>
                     ) : null}
 
+                    {/* Step 3: Seller registration details */}
                     {step === "details" ? (
                         <form onSubmit={detailsForm.handleSubmit(submitDetails)} className="mt-8 space-y-8">
+
+                            {/* Account information */}
                             <section>
                                 <SectionHeading>Account</SectionHeading>
                                 <div className="space-y-4">
@@ -181,6 +213,7 @@ export default function Register() {
                                             minLength: { value: 3, message: "At least 3 characters" },
                                         })}
                                     />
+
                                     <div className="grid grid-cols-2 gap-3">
                                         <Input
                                             label="Mobile"
@@ -188,6 +221,7 @@ export default function Register() {
                                             error={detailsForm.formState.errors.mobile?.message}
                                             {...detailsForm.register("mobile", { required: "Mobile number is required" })}
                                         />
+
                                         <Input
                                             label="GSTIN"
                                             hint="15-character GST number"
@@ -201,6 +235,7 @@ export default function Register() {
                                             })}
                                         />
                                     </div>
+
                                     <div className="grid grid-cols-2 gap-3">
                                         <Input
                                             label="Password"
@@ -211,6 +246,7 @@ export default function Register() {
                                                 minLength: { value: 8, message: "At least 8 characters" },
                                             })}
                                         />
+
                                         <Input
                                             label="Confirm password"
                                             type="password"
@@ -221,6 +257,7 @@ export default function Register() {
                                 </div>
                             </section>
 
+                            {/* Pickup address */}
                             <section>
                                 <SectionHeading>Pickup address</SectionHeading>
                                 <div className="space-y-4">
@@ -229,25 +266,30 @@ export default function Register() {
                                         error={detailsForm.formState.errors.address_line1?.message}
                                         {...detailsForm.register("address_line1", { required: "Required" })}
                                     />
+
                                     <Input label="Address line 2 (optional)" {...detailsForm.register("address_line2")} />
+
                                     <div className="grid grid-cols-2 gap-3">
                                         <Input
                                             label="City"
                                             error={detailsForm.formState.errors.city?.message}
                                             {...detailsForm.register("city", { required: "Required" })}
                                         />
+
                                         <Input
                                             label="State"
                                             error={detailsForm.formState.errors.state?.message}
                                             {...detailsForm.register("state", { required: "Required" })}
                                         />
                                     </div>
+
                                     <div className="grid grid-cols-2 gap-3">
                                         <Input
                                             label="Pincode"
                                             error={detailsForm.formState.errors.pincode?.message}
                                             {...detailsForm.register("pincode", { required: "Required" })}
                                         />
+
                                         <Input
                                             label="Country"
                                             defaultValue="India"
@@ -257,6 +299,7 @@ export default function Register() {
                                 </div>
                             </section>
 
+                            {/* Business information */}
                             <section>
                                 <SectionHeading>Business details</SectionHeading>
                                 <div className="space-y-4">
@@ -265,18 +308,22 @@ export default function Register() {
                                         error={detailsForm.formState.errors.business_name?.message}
                                         {...detailsForm.register("business_name", { required: "Required" })}
                                     />
+
                                     <div className="grid grid-cols-2 gap-3">
                                         <Input label="Business email (optional)" type="email" {...detailsForm.register("business_email")} />
                                         <Input label="Business mobile (optional)" type="tel" {...detailsForm.register("business_mobile")} />
                                     </div>
+
                                     <div className="grid grid-cols-2 gap-3">
                                         <Input label="Business type (optional)" placeholder="e.g. Proprietorship" {...detailsForm.register("business_type")} />
                                         <Input label="PAN number (optional)" {...detailsForm.register("pan_number")} />
                                     </div>
+
                                     <Input label="Business address (optional)" {...detailsForm.register("business_address")} />
                                 </div>
                             </section>
 
+                            {/* Bank account details */}
                             <section>
                                 <SectionHeading>Bank details</SectionHeading>
                                 <div className="space-y-4">
@@ -285,18 +332,21 @@ export default function Register() {
                                         error={detailsForm.formState.errors.account_holder_name?.message}
                                         {...detailsForm.register("account_holder_name", { required: "Required" })}
                                     />
+
                                     <div className="grid grid-cols-2 gap-3">
                                         <Input
                                             label="Account number"
                                             error={detailsForm.formState.errors.account_number?.message}
                                             {...detailsForm.register("account_number", { required: "Required" })}
                                         />
+
                                         <Input
                                             label="IFSC code"
                                             error={detailsForm.formState.errors.ifsc_code?.message}
                                             {...detailsForm.register("ifsc_code", { required: "Required" })}
                                         />
                                     </div>
+
                                     <Input
                                         label="Bank name"
                                         error={detailsForm.formState.errors.bank_name?.message}
@@ -305,6 +355,7 @@ export default function Register() {
                                 </div>
                             </section>
 
+                            {/* Finish registration */}
                             <Button type="submit" variant="teal" fullWidth isLoading={detailsForm.formState.isSubmitting}>
                                 Complete registration
                             </Button>

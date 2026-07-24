@@ -1,3 +1,6 @@
+// Customer Frontend
+// Author: Nishtha
+
 import { MapPin, Pencil, Trash2 } from "lucide-react";
 
 export default function AddressCard({ address, onEdit, onDelete, selectable, selected, onSelect }) {
@@ -14,14 +17,18 @@ export default function AddressCard({ address, onEdit, onDelete, selectable, sel
         >
             <div className="flex items-start justify-between gap-3">
 
+                {/* Address details */}
                 <div className="flex items-start gap-2">
                     <MapPin size={16} className="mt-0.5 shrink-0 text-ink-muted" />
+
                     <div>
-                        
+
                         <div className="flex items-center gap-2">
                             <span className="text-xs font-semibold uppercase tracking-wide text-ink-muted">
                                 {address.address_type || "home"}
                             </span>
+
+                            {/* Highlight the default delivery address */}
                             {address.is_default ? (
                                 <span className="rounded-full bg-gold-50 px-2 py-0.5 text-[11px] font-medium text-gold-700">
                                     Default
@@ -43,6 +50,7 @@ export default function AddressCard({ address, onEdit, onDelete, selectable, sel
                     </div>
                 </div>
 
+                {/* Edit/Delete actions */}
                 {(onEdit || onDelete) && (
 
                     <div className="flex shrink-0 items-center gap-1">
@@ -78,7 +86,7 @@ export default function AddressCard({ address, onEdit, onDelete, selectable, sel
                     </div>
                 )}
             </div>
-            
+
         </div>
     );
 }

@@ -1,3 +1,6 @@
+// Customer Frontend
+// Author: Nishtha
+
 import { useEffect, useState } from "react";
 import { MapPin, Plus } from "lucide-react";
 import toast from "react-hot-toast";
@@ -25,16 +28,21 @@ export default function Addresses() {
     async function load() {
         setIsLoading(true);
         setError("");
+
         try {
+            // Fetch all saved addresses for the logged-in customer.
             const res = await axiosInstance.get(CUSTOMER_ADDRESSES.BASE);
             setAddresses(res.data.addresses || []);
+
         } catch (err) {
             setError(err.friendlyMessage || "Failed to load your addresses.");
+
         } finally {
             setIsLoading(false);
         }
     }
 
+    // Load addresses when the page opens.
     useEffect(() => {
         load();
     }, []);
@@ -45,12 +53,14 @@ export default function Addresses() {
     }
 
     function openEditModal(address) {
+        // Open the form with the selected address.
         setEditingAddress(address);
         setModalOpen(true);
     }
 
     async function handleSubmit(values) {
         setIsSubmitting(true);
+
         try {
             if (editingAddress) {
                 await axiosInstance.patch(CUSTOMER_ADDRESSES.BY_ID(editingAddress.id), values);
@@ -59,21 +69,31 @@ export default function Addresses() {
                 await axiosInstance.post(CUSTOMER_ADDRESSES.BASE, values);
                 toast.success("Address added");
             }
+
             setModalOpen(false);
+
+            // Refresh the list after saving changes.
             load();
+
         } catch (err) {
             toast.error(err.friendlyMessage || "Failed to save address.");
+
         } finally {
             setIsSubmitting(false);
         }
     }
 
     async function handleDelete(address) {
+
         if (!window.confirm("Delete this address?")) return;
+
         try {
             await axiosInstance.delete(CUSTOMER_ADDRESSES.BY_ID(address.id));
             toast.success("Address deleted");
+
+            // Reload the updated address list.
             load();
+
         } catch (err) {
             toast.error(err.friendlyMessage || "Failed to delete address.");
         }
@@ -84,8 +104,10 @@ export default function Addresses() {
 
     return (
         <div className="space-y-6">
+
             <div className="flex items-center justify-between">
                 <h1 className="font-display text-2xl font-semibold text-ink">Your addresses</h1>
+
                 <Button icon={Plus} size="sm" onClick={openAddModal}>
                     Add address
                 </Button>
@@ -99,6 +121,7 @@ export default function Addresses() {
                     action={<Button onClick={openAddModal}>Add your first address</Button>}
                 />
             ) : (
+                // Display all saved delivery addresses.
                 <div className="space-y-3">
                     {addresses.map((address) => (
                         <AddressCard

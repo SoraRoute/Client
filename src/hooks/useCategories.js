@@ -1,7 +1,11 @@
+// Shared Module
+// Authors: Nishtha & Pinki
+
 import { useEffect, useState } from "react";
 import axiosInstance from "../api/axiosInstance";
 import { CATEGORIES } from "../api/endpoints";
 
+// Fetch categories once when the component mounts.
 export default function useCategories() {
     const [categories, setCategories] = useState([]);
     const [isLoading, setIsLoading] = useState(true);

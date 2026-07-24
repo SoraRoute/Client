@@ -1,3 +1,6 @@
+// Shared Module
+// Authors: Nishtha & Pinki
+
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -32,6 +35,7 @@ export default function useWishlist() {
 
     async function toggleWishlist(product) {
 
+        // Guests get sent to login instead of hitting the API.
         if (!isAuthenticated) {
             navigate("/login");
             return;

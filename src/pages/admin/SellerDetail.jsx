@@ -1,3 +1,6 @@
+
+// Author: Nishtha and Pinki
+
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
@@ -10,8 +13,10 @@ import Loader from "../../components/common/Loader";
 import ErrorMessage from "../../components/common/ErrorMessage";
 import StatusBadge from "../../components/common/StatusBadge";
 
+// Available seller account statuses.
 const STATUS_OPTIONS = ["PENDING", "ACTIVE", "SUSPENDED"];
 
+// Small helper for displaying seller information.
 function Field({ label, value }) {
     return (
         <div>
@@ -34,7 +39,9 @@ export default function SellerDetail() {
 
         setIsLoading(true);
         setError("");
+
         try {
+            // Load seller details for the selected seller.
             const res = await axiosInstance.get(ADMIN_SELLERS.BY_ID(sellerId));
             setSeller(res.data.data);
 
@@ -46,19 +53,25 @@ export default function SellerDetail() {
         }
     }
 
+    // Fetch seller details whenever the route changes.
     useEffect(() => {
         load();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [sellerId]);
 
     async function handleStatusChange(nextStatus) {
+
+        // Skip the request if the status hasn't actually changed.
         if (!nextStatus || nextStatus === seller.account_status) return;
 
         setIsUpdating(true);
 
         try {
             await axiosInstance.patch(ADMIN_SELLERS.STATUS(sellerId), { account_status: nextStatus });
+
+            // Keep the UI in sync after a successful update.
             setSeller((prev) => ({ ...prev, account_status: nextStatus }));
+
             toast.success("Seller status updated");
 
         } catch (err) {
@@ -87,6 +100,7 @@ export default function SellerDetail() {
                     <StatusBadge status={seller.account_status} />
                 </div>
 
+                {/* Seller information */}
                 <div className="mt-6 grid grid-cols-2 gap-4">
                     <Field label="Email" value={seller.email} />
                     <Field label="Mobile" value={seller.mobile} />
@@ -94,6 +108,7 @@ export default function SellerDetail() {
                     <Field label="Joined" value={formatDate(seller.created_at)} />
                 </div>
 
+                {/* Account status controls */}
                 <div className="mt-6 border-t border-paper-line pt-5">
 
                     <p className="mb-2 text-sm font-medium text-ink-soft">Update account status</p>
@@ -115,7 +130,7 @@ export default function SellerDetail() {
                             >
                                 {status}
                             </button>
-                            
+
                         ))}
                     </div>
                 </div>

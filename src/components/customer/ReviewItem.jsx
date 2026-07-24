@@ -1,3 +1,6 @@
+// Customer Frontend
+// Author: Nishtha
+
 import { Pencil, Trash2 } from "lucide-react";
 import StarRating from "./StarRating";
 import { formatDate } from "../../utils/format";

@@ -1,3 +1,6 @@
+// Shared Module
+// Authors: Nishtha & Pinki
+
 import { Outlet } from "react-router-dom";
 import { LayoutDashboard, Package, Receipt, User, Wallet } from "lucide-react";
 import toast from "react-hot-toast";

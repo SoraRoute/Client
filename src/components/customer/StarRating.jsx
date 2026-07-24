@@ -1,3 +1,6 @@
+// Customer Frontend
+// Author: Nishtha
+
 import { Star } from "lucide-react";
 
 export default function StarRating({ value = 0, onChange, size = 16 }) {
@@ -6,10 +9,12 @@ export default function StarRating({ value = 0, onChange, size = 16 }) {
 
     return (
         <span className="inline-flex items-center gap-0.5">
-            
+
+            {/* Render either clickable or read-only stars */}
             {stars.map((star) => {
                 const filled = star <= Math.round(value);
                 const Star_ = Star;
+
                 return isInteractive ? (
                     <button
                         key={star}

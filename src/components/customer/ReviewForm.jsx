@@ -1,3 +1,6 @@
+// Customer Frontend
+// Author: Nishtha
+
 import { useState } from "react";
 import StarRating from "./StarRating";
 import Button from "../common/Button";
@@ -5,6 +8,7 @@ import Button from "../common/Button";
 const RATING_LABELS = ["", "Poor", "Fair", "Good", "Very good", "Excellent"];
 
 export default function ReviewForm({ initialValues, onSubmit, onCancel, isSubmitting }) {
+    // Pre-fill values when editing an existing review.
     const [rating, setRating] = useState(initialValues?.rating || 0);
     const [comment, setComment] = useState(initialValues?.comment || "");
 
@@ -21,6 +25,7 @@ export default function ReviewForm({ initialValues, onSubmit, onCancel, isSubmit
             className="rounded-3xl border border-paper-line bg-white p-6 shadow-sm sm:p-7"
         >
 
+            {/* Form heading changes for create vs edit */}
             <h3 className="font-display text-lg font-bold text-ink">
                 {initialValues ? "Update your review" : "Write your review"}
             </h3>
@@ -29,6 +34,7 @@ export default function ReviewForm({ initialValues, onSubmit, onCancel, isSubmit
                 Share honest feedback to help other shoppers decide.
             </p>
 
+            {/* Rating selector */}
             <div className="mt-5 rounded-2xl border border-paper-line bg-paper-raised/60 px-5 py-4">
 
                 <span className="mb-2 block text-xs font-semibold uppercase tracking-wider text-ink-muted">
@@ -45,6 +51,7 @@ export default function ReviewForm({ initialValues, onSubmit, onCancel, isSubmit
 
             </div>
 
+            {/* Optional review message */}
             <div className="mt-4">
 
                 <label htmlFor="review-comment" className="mb-1.5 block text-sm font-medium text-ink-soft">
@@ -62,6 +69,7 @@ export default function ReviewForm({ initialValues, onSubmit, onCancel, isSubmit
 
             </div>
 
+            {/* Form actions */}
             <div className="mt-5 flex flex-col-reverse gap-2.5 sm:flex-row sm:items-center sm:justify-end">
 
                 {onCancel ? (
@@ -79,7 +87,7 @@ export default function ReviewForm({ initialValues, onSubmit, onCancel, isSubmit
                 >
                     {initialValues ? "Update review" : "Submit review"}
                 </Button>
-                
+
             </div>
         </form>
     );

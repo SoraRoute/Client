@@ -1,3 +1,6 @@
+// Shared Module
+// Authors: Nishtha & Pinki
+
 import { X } from "lucide-react";
 
 export default function Modal({ open, title, onClose, children }) {
@@ -7,6 +10,7 @@ export default function Modal({ open, title, onClose, children }) {
 
         <div className="fixed inset-0 z-50 flex items-center justify-center px-4 py-8">
 
+            {/* Backdrop closes the modal when clicked */}
             <div
                 className="absolute inset-0 bg-ink/40 backdrop-blur-sm"
                 onClick={onClose}
@@ -15,9 +19,11 @@ export default function Modal({ open, title, onClose, children }) {
 
             <div className="relative max-h-full w-full max-w-md overflow-y-auto rounded-2xl bg-paper-raised p-6 shadow-pop">
 
+                {/* Modal header */}
                 <div className="mb-4 flex items-center justify-between">
 
                     <h2 className="font-display text-lg font-semibold text-ink">{title}</h2>
+
                     <button
                         type="button"
                         onClick={onClose}
@@ -25,13 +31,13 @@ export default function Modal({ open, title, onClose, children }) {
                         aria-label="Close"
                     >
                         <X size={18} />
-
                     </button>
 
                 </div>
+
                 {children}
             </div>
-            
+
         </div>
     );
 }

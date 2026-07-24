@@ -1,3 +1,6 @@
+// Shared Module
+// Authors: Nishtha & Pinki
+
 import { Outlet } from "react-router-dom";
 import { LayoutDashboard, Package, Receipt, Store, Tag, User } from "lucide-react";
 import toast from "react-hot-toast";
@@ -6,6 +9,7 @@ import { useAdminAuth } from "../../context/AdminAuthContext";
 import axiosInstance from "../../api/axiosInstance";
 import { ADMIN } from "../../api/endpoints";
 
+// Navigation links shown in the admin sidebar.
 const NAV_ITEMS = [
     { to: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard, end: true },
     { to: "/admin/sellers", label: "Sellers", icon: Store },
@@ -16,7 +20,7 @@ const NAV_ITEMS = [
 ];
 
 export default function AdminLayout() {
-    
+
     const { clear } = useAdminAuth();
 
     async function handleLogout() {
@@ -37,6 +41,7 @@ export default function AdminLayout() {
             navItems={NAV_ITEMS}
             onLogout={handleLogout}
         >
+            {/* Render the selected admin page inside the shared dashboard layout */}
             <Outlet />
         </DashboardShell>
     );

@@ -1,3 +1,6 @@
+
+// Authors: Nishtha & Pinki
+
 import { useEffect, useState } from "react";
 import { AlertTriangle, LayoutGrid, Package, PackageX, Store, UserCheck } from "lucide-react";
 import axiosInstance from "../../api/axiosInstance";
@@ -20,6 +23,7 @@ export default function Dashboard() {
         setError("");
 
         try {
+            // Fetch the latest dashboard statistics.
             const res = await axiosInstance.get(ADMIN_DASHBOARD);
             setStats(res.data.data);
 
@@ -31,6 +35,7 @@ export default function Dashboard() {
         }
     }
 
+    // Load dashboard data when the page opens.
     useEffect(() => {
         load();
     }, []);
@@ -41,9 +46,10 @@ export default function Dashboard() {
     return (
 
         <div className="space-y-8">
-            
+
             <h1 className="font-display text-2xl font-semibold text-ink">Platform overview</h1>
 
+            {/* Seller statistics */}
             <div>
                 <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-ink-muted">Sellers</h2>
                 <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
@@ -53,6 +59,7 @@ export default function Dashboard() {
                 </div>
             </div>
 
+            {/* Product statistics */}
             <div>
                 <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-ink-muted">Products</h2>
                 <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
@@ -63,6 +70,7 @@ export default function Dashboard() {
                 </div>
             </div>
 
+            {/* Category summary */}
             <div>
                 <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-ink-muted">Catalog</h2>
                 <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">

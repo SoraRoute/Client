@@ -1,3 +1,6 @@
+// Seller Frontend
+// Author: Pinki
+
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
@@ -23,6 +26,7 @@ export default function Profile() {
     } = useForm();
 
     useEffect(() => {
+        // Populate the form with the latest profile information.
         if (user) {
             reset({ sellerName: user.seller_name || "", mobile: user.mobile || "", gstin: "" });
         }
@@ -31,9 +35,14 @@ export default function Profile() {
 
     async function onSubmit(values) {
         try {
+            // Save the updated seller profile.
             await axiosInstance.patch(SELLER.UPDATE_PROFILE, values);
+
             toast.success("Profile updated");
+
+            // Refresh the shared auth state after updating.
             refresh();
+
         } catch (err) {
             toast.error(err.friendlyMessage || "Failed to update profile.");
         }
@@ -43,11 +52,14 @@ export default function Profile() {
 
     return (
         <div className="mx-auto w-full max-w-4xl">
-            <div className="rounded-2xl bg-paper-raised p-6 shadow-card border border-paper-line space-y-8">
+            <div className="rounded-2xl border border-paper-line bg-paper-raised p-6 shadow-card space-y-8">
+
+                {/* Account overview */}
                 <div>
                     <h1 className="font-display text-2xl font-semibold text-ink">
                         Welcome, {user?.seller_name || "Seller"}
                     </h1>
+
                     <p className="mt-1 text-sm text-ink-muted">
                         Welcome to your profile. Manage your seller account information here.
                     </p>
@@ -76,6 +88,7 @@ export default function Profile() {
                     </div>
                 </div>
 
+                {/* Editable profile details */}
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                     <Input
                         label="Seller / display name"
@@ -113,6 +126,7 @@ export default function Profile() {
                         })}
                     />
 
+                    {/* Save profile changes */}
                     <div className="flex justify-center">
                         <Button
                             type="submit"
@@ -125,6 +139,7 @@ export default function Profile() {
                     </div>
                 </form>
 
+                {/* Password management */}
                 <Link
                     to="/seller/change-password"
                     className="flex items-center gap-2 text-sm font-medium text-teal-600 hover:text-teal-700"

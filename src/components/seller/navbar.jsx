@@ -1,3 +1,6 @@
+// Seller Frontend
+// Author: Pinki
+
 import { Bell } from "lucide-react";
 
 export default function SellerTopNavbar() {

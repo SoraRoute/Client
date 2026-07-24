@@ -1,3 +1,6 @@
+
+// Author: Nishtha and Pinki
+
 import { useEffect, useState } from "react";
 import { LayoutGrid, Pencil, Plus, Trash2 } from "lucide-react";
 import toast from "react-hot-toast";
@@ -27,7 +30,9 @@ export default function Categories() {
 
         setIsLoading(true);
         setError("");
+
         try {
+            // Fetch all categories for the admin table.
             const res = await axiosInstance.get(CATEGORIES.ADMIN_LIST);
             setCategories(res.data.data || []);
 
@@ -39,6 +44,7 @@ export default function Categories() {
         }
     }
 
+    // Load categories when the page opens.
     useEffect(() => {
         load();
     }, []);
@@ -49,6 +55,7 @@ export default function Categories() {
     }
 
     function openEditModal(category) {
+        // Populate the form with the selected category.
         setEditingCategory({
             id: category.id,
             name: category.name,
@@ -72,6 +79,7 @@ export default function Categories() {
                 await axiosInstance.post(CATEGORIES.CREATE, values);
                 toast.success("Category added");
             }
+
             setModalOpen(false);
             load();
 
@@ -85,14 +93,18 @@ export default function Categories() {
 
     async function toggleStatus(category) {
 
+        // Switch between ACTIVE and INACTIVE.
         const nextStatus = category.status === "ACTIVE" ? "INACTIVE" : "ACTIVE";
         setPendingId(category.id);
 
         try {
             await axiosInstance.patch(CATEGORIES.STATUS(category.id), { status: nextStatus });
+
+            // Update the status locally without reloading the list.
             setCategories((prev) =>
                 prev.map((c) => (c.id === category.id ? { ...c, status: nextStatus } : c)),
             );
+
             toast.success("Status updated");
 
         } catch (err) {
@@ -104,7 +116,7 @@ export default function Categories() {
     }
 
     async function handleDelete(category) {
-        
+
         if (!window.confirm(`Delete "${category.name}"?`)) return;
 
         try {
@@ -113,8 +125,7 @@ export default function Categories() {
             load();
 
         } catch (err) {
-            // The backend blocks deletion when the category still has products —
-            // that message comes through as-is via friendlyMessage.
+            // Backend prevents deleting categories that are still in use.
             toast.error(err.friendlyMessage || "Failed to delete category.");
         }
     }
@@ -128,6 +139,7 @@ export default function Categories() {
 
             <div className="flex items-center justify-between">
                 <h1 className="font-display text-2xl font-semibold text-ink">Categories</h1>
+
                 <Button variant="plum" icon={Plus} size="sm" onClick={openAddModal}>
                     Add category
                 </Button>
@@ -153,11 +165,14 @@ export default function Categories() {
 
                         <tbody>
                             {categories.map((category) => {
+                                // Find the parent category name, if available.
                                 const parent = categories.find((c) => c.id === category.parent_category_id);
+
                                 return (
                                     <tr key={category.id} className="border-b border-paper-line last:border-none">
                                         <td className="px-4 py-3">
                                             <p className="font-medium text-ink">{category.name}</p>
+
                                             {category.description ? (
                                                 <p className="line-clamp-1 text-xs text-ink-muted">{category.description}</p>
                                             ) : null}

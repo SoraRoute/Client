@@ -1,3 +1,6 @@
+// Shared Module
+// Authors: Nishtha & Pinki
+
 // Format a number as Indian currency.
 export function formatPrice(value) {
     const amount = Number(value);

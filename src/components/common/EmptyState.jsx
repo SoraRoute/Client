@@ -1,3 +1,6 @@
+// Shared Module
+// Authors: Nishtha & Pinki
+
 export default function EmptyState({
     icon: Icon,
     title = "Nothing here yet",

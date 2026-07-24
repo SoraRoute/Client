@@ -1,3 +1,6 @@
+
+// Author: Nishtha and Pinki
+
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ChevronLeft, Trash2 } from "lucide-react";
@@ -11,6 +14,7 @@ import ErrorMessage from "../../components/common/ErrorMessage";
 import Button from "../../components/common/Button";
 import StatusBadge from "../../components/common/StatusBadge";
 
+// Reusable field used to display product information.
 function Field({ label, value }) {
     return (
         <div>
@@ -37,6 +41,7 @@ export default function ProductDetail() {
         setError("");
 
         try {
+            // Fetch product details using the route parameter.
             const res = await axiosInstance.get(ADMIN_PRODUCTS.BY_ID(productId));
             setProduct(res.data.data);
 
@@ -48,6 +53,7 @@ export default function ProductDetail() {
         }
     }
 
+    // Reload product data whenever a different product is opened.
     useEffect(() => {
         load();
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -55,12 +61,16 @@ export default function ProductDetail() {
 
     async function toggleStatus() {
 
+        // Switch between ACTIVE and INACTIVE.
         const nextStatus = product.status === "ACTIVE" ? "INACTIVE" : "ACTIVE";
         setIsUpdating(true);
 
         try {
             await axiosInstance.patch(ADMIN_PRODUCTS.STATUS(productId), { status: nextStatus });
+
+            // Update the UI without making another request.
             setProduct((prev) => ({ ...prev, status: nextStatus }));
+
             toast.success("Status updated");
 
         } catch (err) {
@@ -78,6 +88,8 @@ export default function ProductDetail() {
         try {
             await axiosInstance.delete(ADMIN_PRODUCTS.BY_ID(productId));
             toast.success("Product deleted");
+
+            // Go back to the products list after deletion.
             navigate("/admin/products");
 
         } catch (err) {
@@ -104,6 +116,7 @@ export default function ProductDetail() {
                     <StatusBadge status={product.status} />
                 </div>
 
+                {/* Product details */}
                 <div className="mt-6 grid grid-cols-2 gap-4">
 
                     <Field label="Price" value={formatPrice(product.price)} />
@@ -119,6 +132,7 @@ export default function ProductDetail() {
 
                 </div>
 
+                {/* Show the description only if one exists */}
                 {product.description ? (
 
                     <div className="mt-4 border-t border-paper-line pt-4">
@@ -128,6 +142,7 @@ export default function ProductDetail() {
 
                 ) : null}
 
+                {/* Product management actions */}
                 <div className="mt-6 flex gap-2 border-t border-paper-line pt-5">
 
                     <Button variant="outline" onClick={toggleStatus} isLoading={isUpdating}>
@@ -137,7 +152,7 @@ export default function ProductDetail() {
                     <Button variant="danger" icon={Trash2} onClick={handleDelete}>
                         Delete
                     </Button>
-                    
+
                 </div>
             </div>
         </div>

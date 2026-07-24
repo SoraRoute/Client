@@ -1,3 +1,6 @@
+// Shared Module
+// Authors: Nishtha & Pinki
+
 import { CustomerAuthProvider } from "./CustomerAuthContext";
 import { SellerAuthProvider } from "./SellerAuthContext";
 import { AdminAuthProvider } from "./AdminAuthContext";

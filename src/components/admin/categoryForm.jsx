@@ -1,3 +1,6 @@
+// Admin Frontend
+// Author: Nishtha
+
 import { useForm } from "react-hook-form";
 import Input from "../common/Input";
 import Button from "../common/Button";

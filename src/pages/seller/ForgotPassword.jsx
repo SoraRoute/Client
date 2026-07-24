@@ -1,3 +1,6 @@
+// Seller Frontend
+// Author: Pinki
+
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
@@ -10,6 +13,7 @@ import Button from "../../components/common/Button";
 
 export default function ForgotPassword() {
     useDocumentTitle("Seller — forgot password");
+
     const navigate = useNavigate();
     const [step, setStep] = useState("email");
     const [email, setEmail] = useState("");
@@ -19,30 +23,38 @@ export default function ForgotPassword() {
 
     async function submitEmail(values) {
         try {
+            // Send an OTP to the seller's registered email.
             await axiosInstance.post(SELLER.FORGOT_PASSWORD, { email: values.email });
+
             setEmail(values.email);
             setStep("reset");
+
             toast.success("OTP sent to your email");
+
         } catch (err) {
             toast.error(err.friendlyMessage || "Failed to send OTP.");
         }
     }
 
     async function submitReset(values) {
+        // Ensure both password fields match before submitting.
         if (values.newPassword !== values.confirmPassword) {
             resetForm.setError("confirmPassword", {
                 message: "Passwords do not match",
             });
             return;
         }
+
         try {
             await axiosInstance.post(SELLER.RESET_PASSWORD, {
                 email,
                 otp: values.otp,
                 newPassword: values.newPassword,
             });
+
             toast.success("Password reset — sign in with your new password.");
             navigate("/seller/login");
+
         } catch (err) {
             toast.error(err.friendlyMessage || "Failed to reset password.");
         }
@@ -59,6 +71,7 @@ export default function ForgotPassword() {
                     Enter the OTP sent to {email}
                 </p>
 
+                {/* Password reset form */}
                 <form
                     onSubmit={resetForm.handleSubmit(submitReset)}
                     className="mt-8 space-y-4"
@@ -97,7 +110,6 @@ export default function ForgotPassword() {
                     >
                         Reset password
                     </Button>
-
                 </form>
             </div>
         );
@@ -113,6 +125,7 @@ export default function ForgotPassword() {
                 We&apos;ll send a one-time code to your email
             </p>
 
+            {/* Email verification step */}
             <form
                 onSubmit={emailForm.handleSubmit(submitEmail)}
                 className="mt-8 space-y-4"

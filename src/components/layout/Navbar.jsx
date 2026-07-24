@@ -1,3 +1,6 @@
+// Shared Module
+// Authors: Nishtha & Pinki
+
 import { Link, NavLink } from "react-router-dom";
 import { Heart, LogOut, Search, ShoppingCart } from "lucide-react";
 import { useCustomerAuth } from "../../context/CustomerAuthContext";
@@ -16,12 +19,14 @@ const navLinkClass = ({ isActive }) =>
 export default function Navbar() {
     const { isAuthenticated, user, clear } = useCustomerAuth();
 
+    // Show the customer's first initial in the profile avatar.
     const initial =
         user?.customer?.first_name?.charAt(0)?.toUpperCase() || "U";
 
     async function handleLogout() {
         try {
             await axiosInstance.post(CUSTOMER.LOGOUT);
+
         } catch (error) {
             // Ignore network errors so logout always feels instant.
         } finally {
@@ -33,7 +38,8 @@ export default function Navbar() {
     return (
         <header className="sticky top-0 z-40 border-b border-zinc-800 bg-[#15161B] shadow-md">
             <div className="mx-auto flex max-w-7xl items-center gap-6 px-4 py-3 sm:px-6">
-                {/* Logo */}
+
+                {/* Brand logo */}
                 <Link
                     to="/"
                     className="flex shrink-0 items-center gap-3 transition-opacity hover:opacity-90"
@@ -56,7 +62,7 @@ export default function Navbar() {
                     </span>
                 </Link>
 
-                {/* Navigation */}
+                {/* Main navigation */}
                 <nav className="hidden items-center gap-2 md:flex">
                     <NavLink to="/" end className={navLinkClass}>
                         Home
@@ -71,7 +77,7 @@ export default function Navbar() {
                     </NavLink>
                 </nav>
 
-                {/* Right Side */}
+                {/* Customer actions */}
                 <div className="ml-auto flex items-center gap-2">
                     <Link
                         to="/search"
@@ -97,6 +103,7 @@ export default function Navbar() {
                         <ShoppingCart size={20} />
                     </Link>
 
+                    {/* Switch actions based on authentication state */}
                     {isAuthenticated ? (
                         <>
                             <Link

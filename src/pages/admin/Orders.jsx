@@ -1,3 +1,6 @@
+
+// Author: Nishtha and Pinki
+
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Receipt } from "lucide-react";
@@ -23,6 +26,7 @@ export default function Orders() {
         setError("");
 
         try {
+            // Load all orders for the admin dashboard.
             const res = await axiosInstance.get(ADMIN_ORDERS.BASE);
             setOrders(res.data.data || []);
 
@@ -34,6 +38,7 @@ export default function Orders() {
         }
     }
 
+    // Fetch orders when the page loads.
     useEffect(() => {
         load();
     }, []);
@@ -52,6 +57,7 @@ export default function Orders() {
 
             <h1 className="font-display text-2xl font-semibold text-ink">Orders</h1>
 
+            {/* Orders overview table */}
             <div className="overflow-x-auto rounded-2xl border border-paper-line bg-paper-raised">
 
                 <table className="w-full text-sm">
@@ -71,6 +77,7 @@ export default function Orders() {
                             <tr key={order.order_id} className="border-b border-paper-line last:border-none">
 
                                 <td className="px-4 py-3">
+                                    {/* Open the selected order */}
                                     <Link to={`/admin/orders/${order.order_id}`} className="font-medium text-ink hover:underline">
                                         #{order.order_id}
                                     </Link>
@@ -88,7 +95,7 @@ export default function Orders() {
                                 </td>
 
                                 <td className="px-4 py-3 text-ink-soft">{formatDate(order.created_at)}</td>
-                                
+
                             </tr>
                         ))}
                     </tbody>

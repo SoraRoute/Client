@@ -1,3 +1,6 @@
+// Seller Frontend
+// Author: Pinki
+
 import { useEffect, useMemo, useState } from "react";
 import { Receipt } from "lucide-react";
 import toast from "react-hot-toast";

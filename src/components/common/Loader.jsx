@@ -1,8 +1,12 @@
+// Shared Module
+// Authors: Nishtha & Pinki
+
 // A hexagon-notch spinner — a small nod to the "hive" mark instead of a
 // generic circular spinner.
 
 export default function Loader({ fullScreen = false, label = "Loading…", size = 28 }) {
 
+    // Reuse the same loader for inline and full-page loading states.
     const spinner = (
         <div className="flex flex-col items-center gap-3">
             <svg
@@ -41,6 +45,6 @@ export default function Loader({ fullScreen = false, label = "Loading…", size 
         <div className="min-h-[40vh] w-full flex items-center justify-center py-16">
             {spinner}
         </div>
-        
+
     );
 }

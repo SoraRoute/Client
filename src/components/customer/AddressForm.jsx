@@ -1,3 +1,6 @@
+// Customer Frontend
+// Author: Nishtha
+
 import { useForm } from "react-hook-form";
 import Input from "../common/Input";
 import Button from "../common/Button";
@@ -6,6 +9,7 @@ const ADDRESS_TYPES = ["home", "work", "other"];
 
 export default function AddressForm({ initialValues, onSubmit, onCancel, isSubmitting }) {
 
+    // Reuse the same form for both adding and editing addresses.
     const {
         register,
         handleSubmit,
@@ -27,6 +31,7 @@ export default function AddressForm({ initialValues, onSubmit, onCancel, isSubmi
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
 
+            {/* Address details */}
             <Input
                 label="Address line 1"
                 placeholder="House no., street"
@@ -66,6 +71,7 @@ export default function AddressForm({ initialValues, onSubmit, onCancel, isSubmi
                 <Input label="Country" {...register("country")} />
             </div>
 
+            {/* Address preferences */}
             <label className="block">
 
                 <span className="mb-1.5 block text-sm font-medium text-ink-soft">Address type</span>
@@ -90,6 +96,7 @@ export default function AddressForm({ initialValues, onSubmit, onCancel, isSubmi
 
             </label>
 
+            {/* Form actions */}
             <div className="flex justify-end gap-2 pt-2">
 
                 {onCancel ? (
@@ -97,12 +104,13 @@ export default function AddressForm({ initialValues, onSubmit, onCancel, isSubmi
                         Cancel
                     </Button>
                 ) : null}
+
                 <Button type="submit" isLoading={isSubmitting}>
                     Save address
                 </Button>
 
             </div>
-            
+
         </form>
     );
 }

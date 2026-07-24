@@ -1,3 +1,6 @@
+// Customer Frontend
+// Author: Nishtha
+
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
@@ -19,16 +22,21 @@ export default function Home() {
     async function load() {
         setIsLoading(true);
         setError("");
+
         try {
+            // Load the data needed for the home page.
             const res = await axiosInstance.get(CUSTOMER_HOME);
             setData(res.data);
+
         } catch (err) {
             setError(err.friendlyMessage || "Failed to load the home page.");
+
         } finally {
             setIsLoading(false);
         }
     }
 
+    // Fetch home page content on the initial render.
     useEffect(() => {
         load();
     }, []);
@@ -40,17 +48,21 @@ export default function Home() {
 
     return (
         <div className="space-y-14">
-            {/* Hero */}
+
+            {/* Hero section */}
             <section className="overflow-hidden rounded-3xl bg-ink px-6 py-14 text-center sm:px-12">
                 <p className="font-mono text-xs uppercase tracking-[0.3em] text-gold-500">
                     Independent sellers, one hive
                 </p>
+
                 <h1 className="mx-auto mt-4 max-w-xl font-display text-3xl font-semibold text-paper sm:text-4xl">
                     Find something worth buying today
                 </h1>
+
                 <p className="mx-auto mt-3 max-w-md text-sm text-paper/70">
                     Browse curated categories and fresh arrivals from sellers across MarketHive.
                 </p>
+
                 <Link to="/products" className="mt-6 inline-block">
                     <Button variant="gold" size="lg">
                         Shop all products
@@ -58,15 +70,17 @@ export default function Home() {
                 </Link>
             </section>
 
-            {/* Categories */}
+            {/* Browse categories */}
             {categories.length > 0 ? (
                 <section>
                     <div className="mb-4 flex items-center justify-between">
                         <h2 className="font-display text-xl font-semibold text-ink">Shop by category</h2>
+
                         <Link to="/categories" className="flex items-center gap-1 text-sm font-medium text-teal-600 hover:text-teal-700">
                             View all <ArrowRight size={14} />
                         </Link>
                     </div>
+
                     <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin">
                         {categories.map((category) => (
                             <Link
@@ -85,6 +99,7 @@ export default function Home() {
             {featureProducts.length > 0 ? (
                 <section>
                     <h2 className="mb-4 font-display text-xl font-semibold text-ink">Featured products</h2>
+
                     <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
                         {featureProducts.map((product) => (
                             <ProductCard key={product.id} product={product} />
@@ -93,10 +108,11 @@ export default function Home() {
                 </section>
             ) : null}
 
-            {/* New arrivals */}
+            {/* Recently added products */}
             {newArrivals.length > 0 ? (
                 <section>
                     <h2 className="mb-4 font-display text-xl font-semibold text-ink">New arrivals</h2>
+
                     <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
                         {newArrivals.map((product) => (
                             <ProductCard key={product.id} product={product} />
@@ -104,6 +120,7 @@ export default function Home() {
                     </div>
                 </section>
             ) : null}
+
         </div>
     );
 }

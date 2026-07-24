@@ -1,3 +1,6 @@
+
+// Authors: Nishtha & Pinki
+
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
@@ -10,6 +13,7 @@ import Loader from "../../components/common/Loader";
 import ErrorMessage from "../../components/common/ErrorMessage";
 import StatusBadge from "../../components/common/StatusBadge";
 
+// Available order status values for admin updates.
 const STATUS_OPTIONS = ["PLACED", "CONFIRMED", "SHIPPED", "DELIVERED", "CANCELLED"];
 
 export default function OrderDetail() {
@@ -28,6 +32,7 @@ export default function OrderDetail() {
         setError("");
 
         try {
+            // Fetch complete order details, including all ordered items.
             const res = await axiosInstance.get(ADMIN_ORDERS.BY_ID(orderId));
             setRows(res.data.data || []);
 
@@ -39,6 +44,7 @@ export default function OrderDetail() {
         }
     }
 
+    // Reload order details whenever the route changes.
     useEffect(() => {
         load();
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -51,7 +57,10 @@ export default function OrderDetail() {
 
         try {
             await axiosInstance.patch(ADMIN_ORDERS.STATUS(orderId), { order_status: nextStatus });
+
+            // Reflect the updated status without fetching the order again.
             setRows((prev) => prev.map((row) => ({ ...row, order_status: nextStatus })));
+
             toast.success("Order status updated");
 
         } catch (err) {
@@ -68,9 +77,7 @@ export default function OrderDetail() {
         return <ErrorMessage message={error || "Order not found."} onRetry={load} />;
     }
 
-    // Every row repeats the order/customer header fields (denormalized join),
-    // so pull the shared fields from the first row and treat the rest as line
-    // items.
+    // Shared order details are repeated for every item, so use the first row as the header.
     const header = rows[0];
 
     return (
@@ -89,6 +96,7 @@ export default function OrderDetail() {
 
                 <p className="mt-1 text-sm text-ink-muted">{formatDate(header.created_at)}</p>
 
+                {/* Customer information */}
                 <div className="mt-4 border-t border-paper-line pt-4">
                     <p className="text-xs uppercase tracking-wide text-ink-muted">Customer</p>
                     <p className="mt-0.5 text-sm text-ink">
@@ -97,6 +105,7 @@ export default function OrderDetail() {
                     <p className="text-sm text-ink-muted">{header.email}</p>
                 </div>
 
+                {/* Ordered products */}
                 <div className="mt-4 divide-y divide-paper-line border-t border-paper-line">
                     {rows.map((row, index) => (
                         <div key={`${row.title}-${index}`} className="flex items-center justify-between py-2 text-sm">
@@ -113,6 +122,7 @@ export default function OrderDetail() {
                     <span>{formatPrice(header.total_amount)}</span>
                 </div>
 
+                {/* Update the current order status */}
                 <div className="mt-6 border-t border-paper-line pt-5">
 
                     <p className="mb-2 text-sm font-medium text-ink-soft">Update status</p>
@@ -130,7 +140,7 @@ export default function OrderDetail() {
                             </option>
                         ))}
                     </select>
-                    
+
                 </div>
             </div>
         </div>

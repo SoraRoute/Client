@@ -1,3 +1,6 @@
+// Customer Frontend
+// Author: Nishtha
+
 import { useEffect, useRef, useState } from "react";
 import { MessageCircle, Send, Sparkles, X } from "lucide-react";
 import axiosInstance from "../../api/axiosInstance";
@@ -51,18 +54,22 @@ export default function ChatWidget() {
     const scrollRef = useRef(null);
     const inputRef = useRef(null);
 
+    // Keep the chat scrolled to the latest message.
     useEffect(() => {
         if (scrollRef.current) {
             scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
         }
     }, [messages, isSending]);
 
+    // Focus the input whenever the chat is opened.
     useEffect(() => {
         if (isOpen) inputRef.current?.focus();
     }, [isOpen]);
 
     async function sendMessage(text) {
         const trimmed = text.trim();
+
+        // Prevent duplicate submissions while the request is pending.
         if (!trimmed || isSending) return;
 
         setMessages((prev) => [...prev, { role: "user", content: trimmed }]);
@@ -73,6 +80,7 @@ export default function ChatWidget() {
             // The endpoint is stateless — it only ever sees this one message, not
             // the transcript — so no conversation history is sent here.
             const res = await axiosInstance.post(AI.CHAT, { message: trimmed });
+
             setMessages((prev) => [
                 ...prev,
                 { role: "assistant", content: res.data.reply },
@@ -87,7 +95,7 @@ export default function ChatWidget() {
                         err.friendlyMessage || "Something went wrong. Please try again.",
                 },
             ]);
-            
+
         } finally {
             setIsSending(false);
         }
@@ -102,6 +110,8 @@ export default function ChatWidget() {
         <div className="fixed bottom-5 right-5 z-50 flex flex-col items-end gap-3">
             {isOpen ? (
                 <div className="flex h-[28rem] w-[22rem] max-w-[calc(100vw-2.5rem)] flex-col overflow-hidden rounded-2xl border border-paper-line bg-paper-raised shadow-pop">
+
+                    {/* Chat header */}
                     <div className="flex items-center justify-between border-b border-paper-line bg-ink px-4 py-3">
                         <div className="flex items-center gap-2 text-paper">
                             <Sparkles size={16} className="text-gold-500" />
@@ -109,6 +119,7 @@ export default function ChatWidget() {
                                 MarketHive Assistant
                             </span>
                         </div>
+
                         <button
                             type="button"
                             onClick={() => setIsOpen(false)}
@@ -119,6 +130,7 @@ export default function ChatWidget() {
                         </button>
                     </div>
 
+                    {/* Conversation history */}
                     <div
                         ref={scrollRef}
                         className="flex-1 space-y-3 overflow-y-auto px-4 py-4"
@@ -126,9 +138,11 @@ export default function ChatWidget() {
                         {messages.map((message, index) => (
                             <MessageBubble key={index} message={message} />
                         ))}
+
                         {isSending ? <TypingBubble /> : null}
                     </div>
 
+                    {/* Message composer */}
                     <form
                         onSubmit={handleSubmit}
                         className="flex items-center gap-2 border-t border-paper-line p-3"
@@ -141,6 +155,7 @@ export default function ChatWidget() {
                             disabled={isSending}
                             className="flex-1 rounded-xl border border-paper-line bg-paper px-3.5 py-2.5 text-sm text-ink placeholder:text-ink-muted/70 focus:border-gold-500 focus:outline-none focus:ring-2 focus:ring-gold-300 disabled:opacity-60"
                         />
+
                         <button
                             type="submit"
                             disabled={isSending || !input.trim()}
@@ -153,6 +168,7 @@ export default function ChatWidget() {
                 </div>
             ) : null}
 
+            {/* Floating chat toggle */}
             <button
                 type="button"
                 onClick={() => setIsOpen((v) => !v)}
