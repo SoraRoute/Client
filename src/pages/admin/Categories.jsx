@@ -13,7 +13,7 @@ import EmptyState from "../../components/common/EmptyState";
 import Button from "../../components/common/Button";
 import Modal from "../../components/common/Modal";
 import StatusBadge from "../../components/common/StatusBadge";
-import CategoryForm from "../../components/admin/CategoryForm";
+import CategoryForm from "../../components/admin/categoryForm";
 
 export default function Categories() {
     useDocumentTitle("Categories");
