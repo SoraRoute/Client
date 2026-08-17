@@ -9,7 +9,7 @@ import { formatPrice, effectivePrice } from "../../utils/format";
 // Display the first image as the product thumbnail and fall back
 // to a placeholder when no images are available.
 function ProductImage({ product }) {
-    const imageUrl = product.image_url
+    const imageUrl =  product.images?.[0]?.image_url || product.image_url;
 
     if (imageUrl) {
 
